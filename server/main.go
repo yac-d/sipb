@@ -11,7 +11,7 @@ import (
 )
 
 func saveImage(w http.ResponseWriter, request *http.Request) {
-	fmt.Println(request)
+	fmt.Println(request.Body)
 }
 
 func getIP() string {
