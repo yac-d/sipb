@@ -1,11 +1,12 @@
 <html>
 	<head>
 		<title>Upload to Pastebin</title>
+		<script src="./uploader.js" type="text/javascript"></script>
 	</head>
 	<body>
-		<form enctype="multipart/form-data" action="../upload" method="POST">
+		<form id="uploadForm" enctype="multipart/form-data">
 			<input id="filechooser" name="file" type="file"/>
-			<input id="uploadBtn" type="submit" value="Submit"/>
 		</form>
+		<input id="uploadBtn" type="Button" value="Submit" onclick="uploadFile()"/>
 	</body>
 </html>

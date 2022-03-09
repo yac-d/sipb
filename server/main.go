@@ -31,6 +31,8 @@ func main() {
 	saveImage := func (w http.ResponseWriter, request *http.Request) {
 		request.ParseMultipartForm(32000000)
 		incomingFile, h, _ := request.FormFile("file")
+		fmt.Println(h)
+		fmt.Println(request.Body)
 		persistedFile, _ := os.Create(path.Join(config.BinDir, h.Filename))
 		io.Copy(persistedFile, incomingFile)
 		persistedFile.Close()
