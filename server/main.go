@@ -9,17 +9,10 @@ import (
 	"path"
 	"syscall"
 	"io"
-)
 
-func saveImage(w http.ResponseWriter, request *http.Request) {
-	request.ParseMultipartForm(32000000)
-	incomingFile, h, _ := request.FormFile("file")
-	fmt.Println(h)
-	fmt.Println(incomingFile)
-	persistedFile, _ := os.Create(path.Join(".", h.Filename))
-	io.Copy(persistedFile, incomingFile)
-	persistedFile.Close()
-}
+	"github.com/Eeshaan-rando/sipb/src/configdef"
+	"github.com/Eeshaan-rando/sipb/src/utils"
+)
 
 func getIP() string {
 	conn, _ := net.Dial("udp", "8.8.8.8:80")
@@ -28,10 +21,23 @@ func getIP() string {
 }
 
 func main() {
-	wd, _ := os.Getwd()
-	http.Handle("/", http.FileServer(http.Dir(path.Join(wd, "webpages"))))
+	var config configdef.Config
+	config.ReadFromYAML("./config.yaml")
+
+	if !utils.FileExists(config.BinDir) {
+		os.MkdirAll(config.BinDir, 0755)
+	}
+
+	saveImage := func (w http.ResponseWriter, request *http.Request) {
+		request.ParseMultipartForm(32000000)
+		incomingFile, h, _ := request.FormFile("file")
+		persistedFile, _ := os.Create(path.Join(config.BinDir, h.Filename))
+		io.Copy(persistedFile, incomingFile)
+		persistedFile.Close()
+	}
+
+	http.Handle("/", http.FileServer(http.Dir(config.WebpageDir)))
 	http.HandleFunc("/upload", saveImage)
-	fmt.Println(getIP())
 	err := http.ListenAndServe(fmt.Sprintf("%s:80", getIP()), nil)
 	fmt.Println(err)
 
