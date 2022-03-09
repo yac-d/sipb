@@ -6,12 +6,19 @@ import (
 	"fmt"
 	"os"
 	"os/signal"
+	"path"
 	"syscall"
-	//"io"
+	"io"
 )
 
 func saveImage(w http.ResponseWriter, request *http.Request) {
-	fmt.Println(request.Body)
+	request.ParseMultipartForm(32000000)
+	incomingFile, h, _ := request.FormFile("file")
+	fmt.Println(h)
+	fmt.Println(incomingFile)
+	persistedFile, _ := os.Create(path.Join(".", h.Filename))
+	io.Copy(persistedFile, incomingFile)
+	persistedFile.Close()
 }
 
 func getIP() string {
@@ -22,7 +29,7 @@ func getIP() string {
 
 func main() {
 	wd, _ := os.Getwd()
-	http.Handle("/", http.FileServer(http.Dir(wd)))
+	http.Handle("/", http.FileServer(http.Dir(path.Join(wd, "webpages"))))
 	http.HandleFunc("/upload", saveImage)
 	fmt.Println(getIP())
 	err := http.ListenAndServe(fmt.Sprintf("%s:80", getIP()), nil)
