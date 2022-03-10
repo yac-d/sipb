@@ -4,10 +4,12 @@ import (
 	"gopkg.in/yaml.v2"
 	"io/ioutil"
 	"log"
+	"path"
 )
 
 type Config struct {
-	BinDir     string `yaml:"BinDir"`
+	BinPath    string `yaml:"BinPath"`
+	BinDir     string
 	WebpageDir string `yaml:"WebpageDir"`
 }
 
@@ -18,5 +20,6 @@ func (c *Config) ReadFromYAML(fp string) {
 		log.Fatalln("Unable to read config file")
 	}
 	yaml.Unmarshal(configfileBytes, c)
+	c.BinDir = path.Join(c.WebpageDir, c.BinPath)
 }
 

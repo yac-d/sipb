@@ -12,6 +12,8 @@ import (
 	"io/ioutil"
 	"strconv"
 	"time"
+	"encoding/json"
+	"log"
 
 	"github.com/Eeshaan-rando/sipb/src/configdef"
 	"github.com/Eeshaan-rando/sipb/src/utils"
@@ -40,24 +42,36 @@ func main() {
 		persistedFile.Close()
 	}
 
-	retrieveImage := func(w http.ResponseWriter, request *http.Request) {
+	retrieveFileDetails := func(w http.ResponseWriter, request *http.Request) {
 		files, _ := ioutil.ReadDir(config.BinDir)
-		fmt.Println(request.Header)
-		incomingLen, err := strconv.Atoi(request.Header["Content-Length"][0])
-		fmt.Println(err)
+
+		incomingLen, _ := strconv.Atoi(request.Header["Content-Length"][0])
 		var buf = make([]byte, incomingLen)
 		request.Body.Read(buf)
-		fmt.Println(string(buf))
-		for _, f := range files {
-			fmt.Println(f.Name())
+		whichFile, _ := strconv.Atoi(string(buf))
+
+		if len(files) < whichFile {
+			whichFile = len(files)
 		}
+		var details = make(map[string]string)
+
+		f, _ := os.Open(path.Join(config.BinDir, files[len(files) - whichFile].Name()))
+		var fHeader = make([]byte, 512)
+		f.Read(fHeader)
+		f.Close()
+
+		details["Type"] = http.DetectContentType(fHeader)
+		details["Path"] = path.Join(config.BinPath, files[len(files) - whichFile].Name())
+		log.Println("Requested:", details)
+		outgoing, _ := json.Marshal(details)
+		w.Write(outgoing)
 	}
 
 	http.Handle("/", http.FileServer(http.Dir(config.WebpageDir)))
 	http.HandleFunc("/upload", saveImage)
-	http.HandleFunc("/retrieve", retrieveImage)
+	http.HandleFunc("/retrieve", retrieveFileDetails)
 	err := http.ListenAndServe(fmt.Sprintf("%s:80", getIP()), nil)
-	fmt.Println(err)
+	log.Println(err)
 
 	var terminator = make(chan os.Signal, 1)
 	signal.Notify(terminator, os.Interrupt, syscall.SIGTERM)
