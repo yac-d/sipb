@@ -33,7 +33,7 @@ func main() {
 		os.MkdirAll(config.BinDir, 0755)
 	}
 
-	saveImage := func(w http.ResponseWriter, request *http.Request) {
+	saveFile := func(w http.ResponseWriter, request *http.Request) {
 		request.ParseMultipartForm(32000000)
 		incomingFile, h, _ := request.FormFile("file")
 		var filename = strconv.Itoa(int(time.Now().UnixMilli())) + "_" + h.Filename
@@ -67,9 +67,15 @@ func main() {
 		w.Write(outgoing)
 	}
 
+	retrieveFileCount := func(w http.ResponseWriter, request *http.Request) {
+		files, _ := ioutil.ReadDir(config.BinDir)
+		w.Write([]byte(strconv.Itoa(len(files))))
+	}
+
 	http.Handle("/", http.FileServer(http.Dir(config.WebpageDir)))
-	http.HandleFunc("/upload", saveImage)
+	http.HandleFunc("/upload", saveFile)
 	http.HandleFunc("/retrieve", retrieveFileDetails)
+	http.HandleFunc("/retrieve/fileCount", retrieveFileCount)
 	err := http.ListenAndServe(fmt.Sprintf("%s:80", getIP()), nil)
 	log.Println(err)
 
