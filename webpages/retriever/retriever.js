@@ -1,9 +1,28 @@
 function showFile(filetype, path) {
+	let fileContainer = document.createElement("div");
+	let pathElements = path.split("/");
+	let name = pathElements[pathElements.length - 1];
+
 	if (filetype.includes("image")) {
+		fileContainer.class = "fileContainer imgContainer";
+
+		let filename = document.createElement("h3");
+		filename.innerText = name;
+
 		let img = document.createElement("img");
 		img.src = path;
-		document.getElementById("container").append(img);
+
+		fileContainer.append(filename)
+		fileContainer.append(img);
 	}
+	else {
+		fileContainer.class = "fileContainer";
+		let link = document.createElement("a");
+		link.href = path;
+		link.innerText = name;
+		fileContainer.append(link);
+	}
+	document.getElementById("container").append(fileContainer);
 }
 
 function showLastNthUploadedFile(n) {
@@ -18,7 +37,7 @@ function showLastNthUploadedFile(n) {
 		}
 	};
 
-	xhr.open("POST", "/retrieve", false);
+	xhr.open("POST", "/retrieve", true);
 	xhr.send(n.toString());
 }
 
@@ -36,9 +55,10 @@ function getFileCount() {
 		}
 	}
 
-	xhr.open("GET", "/retrieve/fileCount", false);
+	xhr.open("GET", "/retrieve/fileCount", true);
 	xhr.send();
 }
 
 getFileCount();
 showLastNthUploadedFile(1);
+showLastNthUploadedFile(2);
