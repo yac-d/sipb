@@ -4,8 +4,10 @@ function showFile(details) {
 	let pathElements = path.split("/");
 	let name = pathElements[pathElements.length - 1];
 
+	fileContainer.classList.add("fileContainer");
+
 	if (filetype.includes("image")) {
-		fileContainer.class = "fileContainer imgContainer";
+		fileContainer.classList.add("imgContainer");
 
 		let filename = document.createElement("h3");
 		filename.innerText = name;
