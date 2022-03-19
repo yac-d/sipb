@@ -1,4 +1,5 @@
-function showFile(filetype, path) {
+function showFile(details) {
+	let filetype = details[0]; let path = details[1];
 	let fileContainer = document.createElement("div");
 	let pathElements = path.split("/");
 	let name = pathElements[pathElements.length - 1];
@@ -26,39 +27,53 @@ function showFile(filetype, path) {
 }
 
 function showLastNthUploadedFile(n) {
-	let xhr = new XMLHttpRequest();
+	return new Promise(function(resolve, reject) {
+		let xhr = new XMLHttpRequest();
 
-	xhr.onreadystatechange = function() {
-		if (this.readyState == 4 && this.status == 200) {
-			let resp = {};
-			resp = JSON.parse(this.responseText);
-			console.log(resp);
-			showFile(resp.Type, resp.Path);
-		}
-	};
+		xhr.onreadystatechange = function() {
+			if (this.readyState == 4 && this.status == 200) {
+				let resp = {};
+				resp = JSON.parse(this.responseText);
+				console.log(resp);
+				resolve([resp.Type, resp.Path]);
+			}
+		};
 
-	xhr.open("POST", "/retrieve", true);
-	xhr.send(n.toString());
+		xhr.open("POST", "/retrieve", true);
+		xhr.send(n.toString());
+	});
 }
 
-function showFileCnt(cnt) {
+function setFileCnt(cnt) {
 	document.getElementById("count").innerHTML = cnt.toString() + " files";
 	console.log(cnt);
 }
 
 function getFileCount() {
-	let xhr = new XMLHttpRequest();
+	return new Promise(function(resolve, reject) {
+		let xhr = new XMLHttpRequest();
 
-	xhr.onreadystatechange = function() {
-		if (this.readyState == 4 && this.status == 200) {
-			showFileCnt(parseInt(this.responseText));
+		xhr.onreadystatechange = function() {
+			if (this.readyState == 4 && this.status == 200) {
+				//setFileCnt(parseInt(this.responseText));
+				resolve(parseInt(this.responseText));
+			}
 		}
-	}
 
-	xhr.open("GET", "/retrieve/fileCount", true);
-	xhr.send();
+		xhr.open("GET", "/retrieve/fileCount", true);
+		xhr.send();
+	});
 }
 
-getFileCount();
-showLastNthUploadedFile(1);
-showLastNthUploadedFile(2);
+function showFiles(c) {
+	for (i=1; i<c+1; i++) {
+		p = showLastNthUploadedFile(i);
+		p.then(showFile)
+	}
+}
+
+let fileCntPromise = getFileCount();
+fileCntPromise.then(setFileCnt);
+fileCntPromise.then(showFiles);
+//showLastNthUploadedFile(1);
+//showLastNthUploadedFile(2);
