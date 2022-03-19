@@ -50,21 +50,22 @@ func main() {
 		request.Body.Read(buf)
 		whichFile, _ := strconv.Atoi(string(buf))
 
-		if len(files) < whichFile {
-			whichFile = len(files)
+		if whichFile <= len(files) {
+			var details = make(map[string]string)
+
+			f, _ := os.Open(path.Join(config.BinDir, files[len(files) - whichFile].Name()))
+			var fHeader = make([]byte, 512)
+			f.Read(fHeader)
+			f.Close()
+
+			details["Type"] = http.DetectContentType(fHeader)
+			details["Path"] = path.Join(config.BinPath, files[len(files) - whichFile].Name())
+			log.Println("Requested:", details)
+			outgoing, _ := json.Marshal(details)
+			w.Write(outgoing)
+		} else {
+			w.WriteHeader(http.StatusBadRequest)
 		}
-		var details = make(map[string]string)
-
-		f, _ := os.Open(path.Join(config.BinDir, files[len(files) - whichFile].Name()))
-		var fHeader = make([]byte, 512)
-		f.Read(fHeader)
-		f.Close()
-
-		details["Type"] = http.DetectContentType(fHeader)
-		details["Path"] = path.Join(config.BinPath, files[len(files) - whichFile].Name())
-		log.Println("Requested:", details)
-		outgoing, _ := json.Marshal(details)
-		w.Write(outgoing)
 	}
 
 	retrieveFileCount := func(w http.ResponseWriter, request *http.Request) {
