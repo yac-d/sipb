@@ -26,7 +26,7 @@ function showFile(details) {
 	document.getElementById("container").append(fileContainer);
 }
 
-function showLastNthUploadedFile(n) {
+function fetchLastNthUploadedFile(n) {
 	return new Promise(function(resolve, reject) {
 		let xhr = new XMLHttpRequest();
 
@@ -66,7 +66,7 @@ function getFileCount() {
 
 function showFiles(c) {
 	for (i=1; i<c+1; i++) {
-		p = showLastNthUploadedFile(i);
+		p = fetchLastNthUploadedFile(i);
 		p.then(showFile)
 	}
 }
