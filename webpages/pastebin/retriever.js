@@ -3,30 +3,25 @@ function showFile(details) {
 	let fileContainer = document.createElement("div");
 	let pathElements = path.split("/");
 	let name = pathElements[pathElements.length - 1];
+	let nameElements = name.split("_", 2);
+	let prettyName = nameElements[1];
 
 	fileContainer.classList.add("fileContainer");
+	let filename = document.createElement("h3");
+	let link = document.createElement("a");
+	link.href = path;
+	filename.innerText = prettyName;
+	link.append(filename);
+	fileContainer.append(link);
 
 	if (filetype.includes("image")) {
 		fileContainer.classList.add("imgContainer");
-
-		let filename = document.createElement("h3");
-		filename.innerText = name;
 
 		let img = document.createElement("img");
 		img.src = path;
 		img.classList.add("imagePreview");
 
-		fileContainer.append(filename)
 		fileContainer.append(img);
-	}
-	else {
-		fileContainer.class = "fileContainer";
-		let link = document.createElement("a");
-		link.href = path;
-		let filename = document.createElement("h3");
-		filename.innerText = name;
-		link.append(filename);
-		fileContainer.append(link);
 	}
 	document.getElementById("container").append(fileContainer);
 }
