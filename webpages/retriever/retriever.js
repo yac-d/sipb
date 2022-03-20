@@ -14,6 +14,7 @@ function showFile(details) {
 
 		let img = document.createElement("img");
 		img.src = path;
+		img.classList.add("imagePreview");
 
 		fileContainer.append(filename)
 		fileContainer.append(img);
@@ -22,7 +23,9 @@ function showFile(details) {
 		fileContainer.class = "fileContainer";
 		let link = document.createElement("a");
 		link.href = path;
-		link.innerText = name;
+		let filename = document.createElement("h3");
+		filename.innerText = name;
+		link.append(filename);
 		fileContainer.append(link);
 	}
 	document.getElementById("container").append(fileContainer);
@@ -57,7 +60,6 @@ function getFileCount() {
 
 		xhr.onreadystatechange = function() {
 			if (this.readyState == 4 && this.status == 200) {
-				//setFileCnt(parseInt(this.responseText));
 				resolve(parseInt(this.responseText));
 			}
 		}
@@ -77,5 +79,3 @@ function showFiles(c) {
 let fileCntPromise = getFileCount();
 fileCntPromise.then(setFileCnt);
 fileCntPromise.then(showFiles);
-//showLastNthUploadedFile(1);
-//showLastNthUploadedFile(2);

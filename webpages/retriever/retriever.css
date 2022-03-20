@@ -1,3 +1,7 @@
+html {
+	text-align: center;
+}
+
 .fileContainer {
 	border-width: 5px;
 	border-style: solid;
@@ -6,6 +10,11 @@
 
 	margin: 10px;
 	padding: 10px;
+}
+
+.imagePreview {
+	max-width: 100%;
+	height: auto;
 }
 
 @media (prefers-color-scheme: dark){
