@@ -3,8 +3,7 @@ function showFile(details) {
 	let fileContainer = document.createElement("div");
 	let pathElements = path.split("/");
 	let name = pathElements[pathElements.length - 1];
-	let nameElements = name.split("_", 2);
-	let prettyName = nameElements[1];
+	let prettyName = name.substr(name.search("_")+1, name.length);
 
 	fileContainer.classList.add("fileContainer");
 	let filename = document.createElement("h3");
