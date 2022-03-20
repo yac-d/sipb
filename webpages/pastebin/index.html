@@ -3,12 +3,18 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<head>
-		<title>Retrieve Image</title>
+		<title>Pastebin</title>
 		<link rel="stylesheet" type="text/css" href="./retriever.css">
 	</head>
 	<body>
+		<form id="uploadForm" enctype="multipart/form-data">
+			<input id="filechooser" name="file" type="file"/>
+		</form>
+		<input id="uploadBtn" type="Button" value="Upload" onclick="uploadFile()"/>
+
 		<h1 id="count">View the latest files uploaded to the pastebin here.</h1>
 		<div id="container"></div>
 	</body>
 	<script src="./retriever.js"></script>
+	<script src="./uploader.js"></script>
 </html>
