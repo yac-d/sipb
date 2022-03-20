@@ -19,12 +19,6 @@ import (
 	"github.com/Eeshaan-rando/sipb/src/utils"
 )
 
-func getIP() string {
-	conn, _ := net.Dial("udp", "8.8.8.8:80")
-	defer conn.Close()
-	return net.IP(conn.LocalAddr().(*net.UDPAddr).IP).String()
-}
-
 func main() {
 	var config configdef.Config
 	config.ReadFromYAML("./config.yaml")
@@ -77,7 +71,7 @@ func main() {
 	http.HandleFunc("/upload", saveFile)
 	http.HandleFunc("/retrieve", retrieveFileDetails)
 	http.HandleFunc("/retrieve/fileCount", retrieveFileCount)
-	err := http.ListenAndServe(fmt.Sprintf("%s:80", getIP()), nil)
+	err := http.ListenAndServe(fmt.Sprintf("%s:%d", config.BindAddr, config.Port), nil)
 	log.Println(err)
 
 	var terminator = make(chan os.Signal, 1)

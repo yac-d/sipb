@@ -11,6 +11,8 @@ type Config struct {
 	BinPath    string `yaml:"BinPath"`
 	BinDir     string
 	WebpageDir string `yaml:"WebpageDir"`
+	Port       int    `yaml:"Port"`
+	BindAddr   string `yaml:"BindAddr"`
 }
 
 //ReadFromYAML reads config information from the YAML file at the specified path
