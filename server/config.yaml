@@ -1,6 +1,4 @@
 WebpageDir: ../webpages
 BinPath: /bin
-Username: name
-Password: abc123
 BindAddr: "192.168.142.30"
 Port: 80
