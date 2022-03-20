@@ -70,6 +70,8 @@ function showFiles(c) {
 	}
 }
 
-let fileCntPromise = getFileCount();
-fileCntPromise.then(setFileCnt);
-fileCntPromise.then(showFiles);
+function loadFiles() {
+	let fileCntPromise = getFileCount();
+	fileCntPromise.then(setFileCnt);
+	fileCntPromise.then(showFiles);
+}

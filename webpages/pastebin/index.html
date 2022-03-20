@@ -5,8 +5,10 @@
 	<head>
 		<title>Pastebin</title>
 		<link rel="stylesheet" type="text/css" href="./pastebin.css">
+		<script src="./retriever.js"></script>
+		<script src="./uploader.js"></script>
 	</head>
-	<body>
+	<body onload="loadFiles()">
 		<form id="uploadForm" enctype="multipart/form-data">
 			<input id="filechooser" name="file" type="file"/>
 		</form>
@@ -15,6 +17,4 @@
 		<h1 id="count">View the latest files uploaded to the pastebin here.</h1>
 		<div id="container"></div>
 	</body>
-	<script src="./retriever.js"></script>
-	<script src="./uploader.js"></script>
 </html>
