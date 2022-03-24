@@ -1,7 +1,8 @@
 FROM golang:latest as buildcontainer
 
 WORKDIR /build
-RUN git clone https://github.com/Eeshaan-rando/sipb.git
+# RUN git clone https://github.com/Eeshaan-rando/sipb.git
+COPY . /build/sipb/
 WORKDIR /build/sipb/server
 RUN go build -o sipb
 
