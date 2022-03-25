@@ -8,4 +8,5 @@ function uploadFile(form) {
 	xhr.open("POST", "/upload", true);
 	xhr.send(new FormData(uploadForm));
 	chooser.value = "";
+	loadFiles();
 }

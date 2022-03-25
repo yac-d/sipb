@@ -82,6 +82,7 @@ function showFiles(c) {
 }
 
 function loadFiles() {
+	document.getElementById("container").innerHTML = "";
 	let fileCntPromise = getFileCount();
 	fileCntPromise.then(setFileCnt);
 	fileCntPromise.then(showFiles);
