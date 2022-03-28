@@ -10,9 +10,11 @@
 	</head>
 	<body onload="loadFiles()">
 		<form id="uploadForm" enctype="multipart/form-data">
-			<input id="filechooser" name="file" type="file"/>
+			<div class="fccontainer">
+				<label class="filechooserBtn" for="filechooser">Upload file</label>
+				<input id="filechooser" name="file" type="file" class="filechooserWidget" onchange="uploadFile()"/>
+			</div>
 		</form>
-		<input id="uploadBtn" type="Button" value="Upload" onclick="uploadFile()"/>
 
 		<h1 id="count">View the latest files uploaded to the pastebin here.</h1>
 		<div id="container"></div>

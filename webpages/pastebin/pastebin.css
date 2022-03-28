@@ -25,9 +25,37 @@ html {
 }
 
 body {
+	position: relative;
 	margin: lem auto;
 	padding: 0 .62em;
 	font: 1.2em/1.62 sans-serif
+}
+
+.fccontainer {
+	position: relative;
+	align-items: center;
+}
+
+.filechooserBtn {
+	position: absolute;
+	padding: 10px;
+	background-color: #00ee11;
+	border-width: 5px;
+	border-color: #aaaaaa;
+	border-radius: 5px;
+	z-index: 1;
+}
+
+.filechooserWidget {
+	position: relative;
+	top: 0px;
+	left: 0px;
+	opacity: 0;
+	-moz-opacity: 0;
+	filter: alpha(opacity: 0);
+	z-index: 2;
+	margin-top: -3em;
+	width: 100px;
 }
 
 h1, h2, h3 {
