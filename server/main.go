@@ -29,10 +29,20 @@ func main() {
 	saveFile := func(w http.ResponseWriter, request *http.Request) {
 		request.ParseMultipartForm(32000000)
 		incomingFile, h, _ := request.FormFile("file")
+
 		var filename = strconv.Itoa(int(time.Now().UnixMilli())) + "_" + h.Filename
 		persistedFile, _ := os.Create(path.Join(config.BinDir, filename))
 		io.Copy(persistedFile, incomingFile)
 		persistedFile.Close()
+
+		if config.MaxFileCnt != -1 {
+			files, _ := ioutil.ReadDir(config.BinDir)
+			var i = 0
+			for len(files) - i > config.MaxFileCnt {
+				os.Remove(path.Join(config.BinDir, files[i].Name()))
+				i += 1
+			}
+		}
 	}
 
 	retrieveFileDetails := func(w http.ResponseWriter, request *http.Request) {
@@ -43,22 +53,23 @@ func main() {
 		request.Body.Read(buf)
 		whichFile, _ := strconv.Atoi(string(buf))
 
-		if whichFile <= len(files) {
-			var details = make(map[string]string)
-
-			f, _ := os.Open(path.Join(config.BinDir, files[len(files) - whichFile].Name()))
-			var fHeader = make([]byte, 512)
-			f.Read(fHeader)
-			f.Close()
-
-			details["Type"] = http.DetectContentType(fHeader)
-			details["Path"] = path.Join(config.BinPath, files[len(files) - whichFile].Name())
-			log.Println("Requested:", details)
-			outgoing, _ := json.Marshal(details)
-			w.Write(outgoing)
-		} else {
+		if whichFile > len(files) {
 			w.WriteHeader(http.StatusBadRequest)
+			return
 		}
+
+		var details = make(map[string]string)
+
+		f, _ := os.Open(path.Join(config.BinDir, files[len(files) - whichFile].Name()))
+		var fHeader = make([]byte, 512)
+		f.Read(fHeader)
+		f.Close()
+
+		details["Type"] = http.DetectContentType(fHeader)
+		details["Path"] = path.Join(config.BinPath, files[len(files) - whichFile].Name())
+		log.Println("Requested:", details)
+		outgoing, _ := json.Marshal(details)
+		w.Write(outgoing)
 	}
 
 	retrieveFileCount := func(w http.ResponseWriter, request *http.Request) {

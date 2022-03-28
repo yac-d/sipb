@@ -2,3 +2,4 @@ WebpageDir: /var/www/html
 BinPath: /bin
 BindAddr: ""
 Port: 80
+MaxFileCnt: 3
