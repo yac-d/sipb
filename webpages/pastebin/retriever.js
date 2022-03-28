@@ -5,7 +5,6 @@ function setFileCnt(cnt) {
 	else {
 		document.getElementById("count").innerHTML = "1 file";
 	}
-	console.log(cnt);
 }
 
 function getFileCount() {
@@ -32,11 +31,7 @@ function fetchLastNthUploadedFile(n) {
 				let resp = {};
 				resp = JSON.parse(this.responseText);
 				console.log(resp);
-				let details = {};
-				details.Type = resp.Type;
-				details.Path = resp.Path;
-				details.Num = n;
-				resolve(details);
+				resolve(resp);
 			}
 		};
 
