@@ -5,6 +5,7 @@
 	<head>
 		<title>Pastebin</title>
 		<link rel="stylesheet" type="text/css" href="./pastebin.css">
+		<script src="./pastebinFuncs.js"></script>
 		<script src="./retriever.js"></script>
 		<script src="./uploader.js"></script>
 	</head>
@@ -12,7 +13,7 @@
 		<form id="uploadForm" enctype="multipart/form-data">
 			<div class="fccontainer">
 				<label class="filechooserBtn" for="filechooser">Upload file</label>
-				<input id="filechooser" name="file" type="file" class="filechooserWidget" onchange="uploadFile()"/>
+				<input id="filechooser" name="file" type="file" class="filechooserWidget" onchange="uploadAndRefresh()"/>
 			</div>
 		</form>
 
