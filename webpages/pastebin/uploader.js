@@ -6,10 +6,9 @@ function uploadFile() {
 			return;
 		}
 
-		let xhr = new XMLHttpRequest
+		let xhr = new XMLHttpRequest();
 		xhr.onreadystatechange = function() {
 			if (this.readyState == 4) {
-				console.log("Request complete.");
 				resolve("Done!");
 			}
 		}
@@ -18,11 +17,28 @@ function uploadFile() {
 	});
 }
 
+function refreshFileList() {
+	let cntPromise = getFileCnt();
+	cntPromise.then(setFileCnt);
+	cntPromise.then(function() {
+		let fileContainer = newFileContainer();
+		let firstFileContainer = document.getElementById("container").firstElementChild;
+		if (firstFileContainer == null) {
+			document.getElementById("container").append(fileContainer);
+		}
+		else {
+			firstFileContainer.insertAdjacentElement("beforebegin", fileContainer);
+		}
+		let filePromise = fetchLastNthUploadedFile(1);
+		filePromise.then(details => populateFileContainer(details, fileContainer));
+	});
+}
+
 function uploadAndRefresh() {
 	let p = uploadFile();
 	p.then(function() {
 		chooser.value = "";
-		loadFiles();
+		refreshFileList();
 	});
 	p.catch((e) => alert("Select a file first!"));
 }
