@@ -1,3 +1,6 @@
 server/sipb
 server/bin
 webpages/bin
+docker-compose.yml
+data
+.htpasswd
