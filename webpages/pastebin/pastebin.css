@@ -5,7 +5,7 @@ html {
 .fileContainer {
 	border-width: 5px;
 	border-style: solid;
-	border-color: #aaaaaa;
+	border-color: #aa00aa;
 	border-radius: 5px;
 
 	margin: 10px;
@@ -22,6 +22,7 @@ html {
 	a:link { color: #cdf }
 	a:hover, a:visited:hover { color: #def }
 	a:visited { color: #dcf }
+	.filechooserBtn { color: #000000 }
 }
 
 body {
@@ -38,10 +39,10 @@ body {
 
 .filechooserBtn {
 	position: absolute;
+	width: 120;
+	height: 30px;
 	padding: 10px;
 	background-color: #00ee11;
-	border-width: 5px;
-	border-color: #aaaaaa;
 	border-radius: 5px;
 	z-index: 1;
 }
@@ -62,8 +63,31 @@ h1, h2, h3 {
 	line-height: 1.2;
 }
 
-@media print{
+@media print {
 	body {
 		max-width: none;
 	}
+}
+
+@keyframes spinner {
+	0% {
+		transform: rotate(0deg);
+	}
+	100% {
+		transform: rotate(360deg);
+	}
+}
+.spinner {
+	display: none;
+	margin-top: 2em;
+	width: 2em;
+	height: 2em;
+	border-width: 0.5em;
+	border-color: #009999;
+	border-radius: 50%;
+	border-style: dotted;
+
+	animation: 1.5s linear infinite spinner;
+	animation-play-state: inherit;
+	will-change: transform;
 }

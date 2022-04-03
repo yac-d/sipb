@@ -35,10 +35,12 @@ function refreshFileList() {
 }
 
 function uploadAndRefresh() {
+	document.getElementById("spinner").style.display = "inline-block";
 	let p = uploadFile();
 	p.then(function() {
 		chooser.value = "";
 		refreshFileList();
 	});
 	p.catch((e) => alert("Select a file first!"));
+	p.finally(() => document.getElementById("spinner").style.display = "none");
 }
