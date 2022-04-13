@@ -12,7 +12,6 @@ function fetchLastNthUploadedFile(n) {
 			if (this.readyState == 4 && this.status == 200) {
 				let resp = {};
 				resp = JSON.parse(this.responseText);
-				console.log(resp);
 				resolve(resp);
 			}
 		};
@@ -28,7 +27,6 @@ function populateFileContainer(details, fileContainer) {
 	let prettyName = name.substr(name.search("_")+1, name.length);
 	let date = new Date(parseInt(name.substr(0, name.search("_"))));
 
-	console.log(fileContainer);
 	let filename = document.createElement("h3");
 	let link = document.createElement("a");
 	let timestamp = document.createElement("p");
@@ -73,4 +71,17 @@ function getFileCnt() {
 		xhr.open("GET", "/retrieve/fileCount", true);
 		xhr.send();
 	});
+}
+
+function showAtMostNMoreFiles(n) {
+	let alreadyShownCnt = document.getElementById("container").children.length;
+	let available = parseInt(document.getElementById("count").innerText);
+	if (alreadyShownCnt == available) return;
+	for (i=alreadyShownCnt+1; i<=Math.min(alreadyShownCnt+n, available); i++) {
+		let fileContainer = newFileContainer();
+		document.getElementById("container").append(fileContainer);
+
+		p = fetchLastNthUploadedFile(i);
+		p.then(details => populateFileContainer(details, fileContainer));
+	}
 }
