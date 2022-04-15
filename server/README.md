@@ -16,6 +16,13 @@ So, if your bin is to be at `example.com/content/bin`, you would set `BinPath` t
 - `MaxFileCnt` is the maximum number of files the bin is allowed to store. When the limit is reached, the oldest file is removed after each upload. This can be set to `-1` for no limit.
 
 `config.yaml` must be in the folder where the server binary is run.
+Environment variables, if defined, can override these values. They are:
+
+- `SIPB_WEBPAGE_DIR`
+- `SIPB_BIN_PATH`
+- `SIPB_BIND_ADDR`
+- `SIPB_PORT`
+- `SIPB_MAX_FILE_CNT`
 
 ## Build and run
 
