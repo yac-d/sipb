@@ -13,6 +13,7 @@ import (
 	"time"
 	"encoding/json"
 	"log"
+	"bytes"
 
 	"github.com/Eeshaan-rando/sipb/src/configdef"
 	"github.com/Eeshaan-rando/sipb/src/utils"
@@ -52,7 +53,10 @@ func main() {
 		log.Printf("Receiving file %s", h.Filename)
 		if config.MaxFileSize > -1 {
 			io.CopyN(persistedFile, incomingFile, config.MaxFileSize)
-			log.Printf("File %s above set size limit, truncating to %d bytes", filename, config.MaxFileSize)
+			l := readerLen(incomingFile)
+			if int64(l) > config.MaxFileSize {
+				log.Printf("File %s above set size limit, truncating from %d to %d bytes", filename, l, config.MaxFileSize)
+			}
 		} else {
 			io.Copy(persistedFile, incomingFile)
 		}
@@ -117,4 +121,10 @@ func main() {
 	signal.Notify(terminator, os.Interrupt, syscall.SIGTERM)
 	<-terminator
 	log.Println("Exiting")
+}
+
+func readerLen(r io.Reader) int {
+	var buf bytes.Buffer
+	buf.ReadFrom(r)
+	return len(buf.Bytes())
 }
