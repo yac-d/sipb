@@ -21,11 +21,14 @@ import (
 func main() {
 	var config configdef.Config
 	config.ReadFromYAML("./config.yaml")
+	log.Printf("Read configuration from ./config.yaml")
 	// Overrides config from file only for environment variables that are set (unset ones are ignored)
 	config.ReadFromEnvVars()
+	log.Printf("Read configuration from environment variables")
 
 	if !utils.FileExists(config.BinDir) {
 		os.MkdirAll(config.BinDir, 0755)
+		log.Printf("Creating bin directory %s", config.BinDir)
 	}
 
 	saveFile := func(w http.ResponseWriter, request *http.Request) {
@@ -33,18 +36,22 @@ func main() {
 		incomingFile, h, err := request.FormFile("file")
 
 		if err != nil {
+			log.Println("Error reading uploaded file")
 			w.WriteHeader(http.StatusBadRequest)
 			return
 		}
 
 		var filename = strconv.Itoa(int(time.Now().UnixMilli())) + "_" + h.Filename
 		persistedFile, _ := os.Create(path.Join(config.BinDir, filename))
+		log.Printf("Receiving file %s", h.Filename)
 		if config.MaxFileSize > -1 {
 			io.CopyN(persistedFile, incomingFile, config.MaxFileSize)
+			log.Printf("File %s above set size limit, truncating to %d bytes", filename, config.MaxFileSize)
 		} else {
 			io.Copy(persistedFile, incomingFile)
 		}
 		persistedFile.Close()
+		log.Printf("File %s saved as %s", h.Filename, filename)
 
 		if config.MaxFileCnt != -1 {
 			files, _ := ioutil.ReadDir(config.BinDir)
@@ -52,6 +59,7 @@ func main() {
 			for len(files) - i > config.MaxFileCnt {
 				os.Remove(path.Join(config.BinDir, files[i].Name()))
 				i += 1
+				log.Printf("Removed old file %s", files[i].Name())
 			}
 		}
 	}
@@ -66,6 +74,7 @@ func main() {
 
 		if whichFile > len(files) || whichFile < 1 || err != nil {
 			w.WriteHeader(http.StatusBadRequest)
+			log.Println("Invalid request for file details")
 			return
 		}
 
@@ -78,14 +87,15 @@ func main() {
 
 		details["Type"] = http.DetectContentType(fHeader)
 		details["Path"] = path.Join(config.BinPath, files[len(files) - whichFile].Name())
-		log.Println("Requested:", details)
 		outgoing, _ := json.Marshal(details)
 		w.Write(outgoing)
+		log.Printf("File %s requested", files[len(files) - whichFile].Name())
 	}
 
 	retrieveFileCount := func(w http.ResponseWriter, request *http.Request) {
 		files, _ := ioutil.ReadDir(config.BinDir)
 		w.Write([]byte(strconv.Itoa(len(files))))
+		log.Printf("File count requested, currently at %d", len(files))
 	}
 
 	http.Handle("/", http.FileServer(http.Dir(config.WebpageDir)))
@@ -98,4 +108,5 @@ func main() {
 	var terminator = make(chan os.Signal, 1)
 	signal.Notify(terminator, os.Interrupt, syscall.SIGTERM)
 	<-terminator
+	log.Println("Exiting")
 }
