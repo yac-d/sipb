@@ -21,6 +21,7 @@ import (
 func main() {
 	var config configdef.Config
 	config.ReadFromYAML("./config.yaml")
+	config.ReadFromEnvVars()
 
 	if !utils.FileExists(config.BinDir) {
 		os.MkdirAll(config.BinDir, 0755)
