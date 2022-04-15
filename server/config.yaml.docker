@@ -3,3 +3,4 @@ BinPath: /bin
 BindAddr: ""
 Port: 80
 MaxFileCnt: 50
+MaxFileSize: 5000000000

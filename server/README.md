@@ -14,6 +14,7 @@ So, if your bin is to be at `example.com/content/bin`, you would set `BinPath` t
 - `BindAddr` is the address the server should bind to. For the service to be available on your local network, this should be the server's IP address on the local network.
 - `Port` is the network port for the server to bind to.
 - `MaxFileCnt` is the maximum number of files the bin is allowed to store. When the limit is reached, the oldest file is removed after each upload. This can be set to `-1` for no limit.
+- `MaxFileSize` is the maximum allowed file size in bytes. Files will be truncated if exceeding this limit. This can be set to `-1` for no limit.
 
 `config.yaml` must be in the folder where the server binary is run.
 Environment variables, if defined, can override these values. They are:
@@ -23,6 +24,7 @@ Environment variables, if defined, can override these values. They are:
 - `SIPB_BIND_ADDR`
 - `SIPB_PORT`
 - `SIPB_MAX_FILE_CNT`
+- `SIPB_MAX_FILE_SIZE`
 
 ## Build and run
 

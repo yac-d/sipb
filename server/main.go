@@ -39,7 +39,11 @@ func main() {
 
 		var filename = strconv.Itoa(int(time.Now().UnixMilli())) + "_" + h.Filename
 		persistedFile, _ := os.Create(path.Join(config.BinDir, filename))
-		io.Copy(persistedFile, incomingFile)
+		if config.MaxFileSize > -1 {
+			io.CopyN(persistedFile, incomingFile, config.MaxFileSize)
+		} else {
+			io.Copy(persistedFile, incomingFile)
+		}
 		persistedFile.Close()
 
 		if config.MaxFileCnt != -1 {

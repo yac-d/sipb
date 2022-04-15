@@ -10,12 +10,13 @@ import (
 )
 
 type Config struct {
-	BinPath    string `yaml:"BinPath"`
-	BinDir     string
-	WebpageDir string `yaml:"WebpageDir"`
-	Port       int    `yaml:"Port"`
-	BindAddr   string `yaml:"BindAddr"`
-	MaxFileCnt int    `yaml:"MaxFileCnt"`
+	BinPath     string `yaml:"BinPath"`
+	BinDir      string
+	WebpageDir  string `yaml:"WebpageDir"`
+	Port        int    `yaml:"Port"`
+	BindAddr    string `yaml:"BindAddr"`
+	MaxFileCnt  int    `yaml:"MaxFileCnt"`
+	MaxFileSize int64  `yaml:"MaxFileSize"` // Bytes
 }
 
 //ReadFromYAML reads config information from the YAML file at the specified path
@@ -47,5 +48,9 @@ func (c *Config) ReadFromEnvVars() {
 	if val, set := os.LookupEnv("SIPB_MAX_FILE_CNT"); set {
 		cnt, _ := strconv.Atoi(val)
 		c.MaxFileCnt = cnt
+	}
+	if val, set := os.LookupEnv("SIPB_MAX_FILE_SIZE"); set {
+		size, _ := strconv.ParseInt(val, 10, 64) // strconv.Atoi can't return int64
+		c.MaxFileSize = size
 	}
 }
