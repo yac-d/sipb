@@ -21,6 +21,7 @@ import (
 func main() {
 	var config configdef.Config
 	config.ReadFromYAML("./config.yaml")
+	// Overrides config from file only for environment variables that are set (unset ones are ignored)
 	config.ReadFromEnvVars()
 
 	if !utils.FileExists(config.BinDir) {
@@ -29,7 +30,12 @@ func main() {
 
 	saveFile := func(w http.ResponseWriter, request *http.Request) {
 		request.ParseMultipartForm(32000000)
-		incomingFile, h, _ := request.FormFile("file")
+		incomingFile, h, err := request.FormFile("file")
+
+		if err != nil {
+			w.WriteHeader(http.StatusBadRequest)
+			return
+		}
 
 		var filename = strconv.Itoa(int(time.Now().UnixMilli())) + "_" + h.Filename
 		persistedFile, _ := os.Create(path.Join(config.BinDir, filename))
@@ -52,9 +58,9 @@ func main() {
 		incomingLen, _ := strconv.Atoi(request.Header["Content-Length"][0])
 		var buf = make([]byte, incomingLen)
 		request.Body.Read(buf)
-		whichFile, _ := strconv.Atoi(string(buf))
+		whichFile, err := strconv.Atoi(string(buf))
 
-		if whichFile > len(files) {
+		if whichFile > len(files) || whichFile < 1 || err != nil {
 			w.WriteHeader(http.StatusBadRequest)
 			return
 		}
