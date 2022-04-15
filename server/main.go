@@ -18,6 +18,12 @@ import (
 	"github.com/Eeshaan-rando/sipb/src/utils"
 )
 
+type FileDetails struct {
+	Type string
+	Path string
+	Size int64
+}
+
 func main() {
 	var config configdef.Config
 	config.ReadFromYAML("./config.yaml")
@@ -78,15 +84,17 @@ func main() {
 			return
 		}
 
-		var details = make(map[string]string)
+		var details FileDetails
 
 		f, _ := os.Open(path.Join(config.BinDir, files[len(files) - whichFile].Name()))
 		var fHeader = make([]byte, 512)
 		f.Read(fHeader)
+		fInfo, _ := f.Stat()
 		f.Close()
 
-		details["Type"] = http.DetectContentType(fHeader)
-		details["Path"] = path.Join(config.BinPath, files[len(files) - whichFile].Name())
+		details.Type = http.DetectContentType(fHeader)
+		details.Path = path.Join(config.BinPath, files[len(files) - whichFile].Name())
+		details.Size = fInfo.Size()
 		outgoing, _ := json.Marshal(details)
 		w.Write(outgoing)
 		log.Printf("File %s requested", files[len(files) - whichFile].Name())
