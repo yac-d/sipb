@@ -21,20 +21,41 @@ function fetchLastNthUploadedFile(n) {
 	});
 }
 
+function logBase(b, e) {
+	return Math.log(e) / Math.log(b);
+}
+
+function prettySize(bytes) {
+	let suffixes = ["B", "KiB", "MiB", "TiB"];
+	let logB1024 = Number.parseInt(logBase(1024, bytes));
+	let suffix = suffixes[logB1024];
+	let num = (bytes / (1024 ** logB1024)).toFixed(2);
+	return num.toString() + " " + suffix;
+}
+
 function populateFileContainer(details, fileContainer) {
 	let pathElements = details.Path.split("/");
 	let name = pathElements[pathElements.length - 1];
 	let prettyName = name.substr(name.search("_")+1, name.length);
 	let date = new Date(parseInt(name.substr(0, name.search("_"))));
 
+	let sizestamp = document.createElement("p");
+	sizestamp.innerText = prettySize(details.Size);
+	sizestamp.classList.add("sizestamp");
+	fileContainer.append(sizestamp);
+	
 	let filename = document.createElement("h3");
 	let link = document.createElement("a");
-	let timestamp = document.createElement("p");
-	timestamp.innerText = "Uploaded " + date.toLocaleString();
 	link.href = details.Path;
 	filename.innerText = prettyName;
+	link.classList.add("filelink");
 	link.append(filename);
 	fileContainer.append(link);
+
+	let timestamp = document.createElement("p");
+	timestamp.innerText = date.toLocaleString();
+	timestamp.classList.add("timestamp");
+	fileContainer.append(timestamp);
 
 	if (details.Type.includes("image")) {
 		fileContainer.classList.add("imgContainer");
@@ -45,8 +66,6 @@ function populateFileContainer(details, fileContainer) {
 
 		fileContainer.append(img);
 	}
-
-	fileContainer.append(timestamp);
 }
 
 function setFileCnt(cnt) {

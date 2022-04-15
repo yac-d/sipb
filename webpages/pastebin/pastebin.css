@@ -2,17 +2,55 @@ html {
 	text-align: center;
 }
 
+body {
+	position: relative;
+	margin: lem auto;
+	padding: 0 .62em;
+	font: 1.2em/1.62 sans-serif;
+}
+
 .fileContainer {
 	border-width: 5px;
 	border-style: solid;
 	border-color: #aa00aa;
-	border-radius: 5px;
+	border-radius: 1em;
 
 	margin: 10px;
 	padding: 10px;
+	display: grid;
+	grid-template-columns: 20% auto 20%;
+}
+
+.filelink {
+	display: grid;
+	grid-column: 2 2;
+}
+
+.sizestamp {
+	display: grid;
+	grid-column: 1 1;
+	text-align: left;
+}
+
+.timestamp {
+	display: grid;
+	grid-column: 3 3;
+	text-align: right;
+}
+
+.imgContainer {
+	display: grid;
+	grid-column: span 3;
+	grid-row: 2 2;
+	text-align: center;
+	align-items: center;
 }
 
 .imagePreview {
+	display: grid;
+	grid-column: span 3;
+	grid-row: 2 2;
+	margin: auto;
 	max-width: 100%;
 	height: auto;
 }
@@ -23,13 +61,6 @@ html {
 	a:hover, a:visited:hover { color: #def }
 	a:visited { color: #dcf }
 	.filechooserBtn { color: #000000 }
-}
-
-body {
-	position: relative;
-	margin: lem auto;
-	padding: 0 .62em;
-	font: 1.2em/1.62 sans-serif
 }
 
 .fccontainer {
