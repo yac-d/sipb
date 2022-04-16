@@ -2,13 +2,9 @@ package filedetails
 
 import (
 	"os"
-	"path"
 	"net/http"
 	"encoding/json"
 )
-
-var fslocation string
-var urlpath string
 
 type FileDetails struct {
 	Type string
@@ -16,8 +12,8 @@ type FileDetails struct {
 	Size int64
 }
 
-func NewForFile(filename string) FileDetails {
-	f, _ := os.Open(path.Join(fslocation, filename))
+func New(fileloc, urlpath string) FileDetails {
+	f, _ := os.Open(fileloc)
 	var fHeader = make([]byte, 512)
 	f.Read(fHeader)
 	fInfo, _ := f.Stat()
@@ -25,7 +21,7 @@ func NewForFile(filename string) FileDetails {
 
 	var details FileDetails
 	details.Type = http.DetectContentType(fHeader)
-	details.Path = path.Join(urlpath, filename)
+	details.Path = urlpath
 	details.Size = fInfo.Size()
 
 	return details
@@ -34,12 +30,4 @@ func NewForFile(filename string) FileDetails {
 func (d *FileDetails) AsJSON() []byte {
 	j, _ := json.Marshal(d)
 	return j
-}
-
-func SetFilesystemLocation(fsloc string) {
-	fslocation = fsloc
-}
-
-func SetURLPath(urlp string) {
-	urlpath = urlp
 }
