@@ -11,19 +11,13 @@ import (
 	"io/ioutil"
 	"strconv"
 	"time"
-	"encoding/json"
 	"log"
 	"bytes"
 
 	"github.com/Eeshaan-rando/sipb/src/configdef"
 	"github.com/Eeshaan-rando/sipb/src/utils"
+	"github.com/Eeshaan-rando/sipb/src/filedetails"
 )
-
-type FileDetails struct {
-	Type string
-	Path string
-	Size int64
-}
 
 func main() {
 	var config configdef.Config
@@ -88,20 +82,11 @@ func main() {
 			return
 		}
 
-		var details FileDetails
+		var filename = files[len(files) - whichFile].Name()
+		var details = filedetails.NewForFile(filename)
 
-		f, _ := os.Open(path.Join(config.BinDir, files[len(files) - whichFile].Name()))
-		var fHeader = make([]byte, 512)
-		f.Read(fHeader)
-		fInfo, _ := f.Stat()
-		f.Close()
-
-		details.Type = http.DetectContentType(fHeader)
-		details.Path = path.Join(config.BinPath, files[len(files) - whichFile].Name())
-		details.Size = fInfo.Size()
-		outgoing, _ := json.Marshal(details)
-		w.Write(outgoing)
-		log.Printf("File %s requested", files[len(files) - whichFile].Name())
+		w.Write(details.AsJSON())
+		log.Printf("File %s requested", filename)
 	}
 
 	retrieveFileCount := func(w http.ResponseWriter, request *http.Request) {
@@ -109,6 +94,9 @@ func main() {
 		w.Write([]byte(strconv.Itoa(len(files))))
 		log.Printf("File count requested, currently at %d", len(files))
 	}
+
+	filedetails.SetFilesystemLocation(config.BinDir)
+	filedetails.SetURLPath(config.BinPath)
 
 	http.Handle("/", http.FileServer(http.Dir(config.WebpageDir)))
 	http.HandleFunc("/upload", saveFile)
