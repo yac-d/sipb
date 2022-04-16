@@ -6,10 +6,8 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
-	"io"
 	"strconv"
 	"log"
-	"bytes"
 
 	"github.com/Eeshaan-rando/sipb/src/configdef"
 	"github.com/Eeshaan-rando/sipb/src/filebin"
@@ -74,10 +72,4 @@ func main() {
 	signal.Notify(terminator, os.Interrupt, syscall.SIGTERM)
 	<-terminator
 	log.Println("Exiting")
-}
-
-func readerLen(r io.Reader) int {
-	var buf bytes.Buffer
-	buf.ReadFrom(r)
-	return len(buf.Bytes())
 }
