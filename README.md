@@ -10,3 +10,5 @@ For running in a Docker container (recommended), do the following:
 - Build the container with `docker build -t sipb .` in the repository's root directory
 - Run the container forwarding port 80 and using `./bin` as the directory for bin contents \
 `docker run -p 80:80 -v $PWD/bin:/var/www/bin sipb`
+
+![Screenshot](/assets/Pastebin.png "Cool, right?")
