@@ -9,6 +9,9 @@ function uploadFile() {
 		let xhr = new XMLHttpRequest();
 		xhr.onreadystatechange = function() {
 			if (this.readyState == 4) {
+				if (this.status == 413) {
+					alert("File uploaded too large! Truncated to maximum size.");
+				}
 				resolve("Done!");
 			}
 		}

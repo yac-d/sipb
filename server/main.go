@@ -34,7 +34,9 @@ func main() {
 			return
 		}
 
-		bin.SaveFile(incomingFile, h)
+		if bin.SaveFile(incomingFile, h) { // checking if file had to be truncated
+			w.WriteHeader(http.StatusRequestEntityTooLarge)
+		}
 	}
 
 	retrieveFileDetails := func(w http.ResponseWriter, request *http.Request) {

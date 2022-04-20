@@ -28,7 +28,7 @@ func NewFromConfig(c configdef.Config) FileBin {
 	return fb
 }
 
-func (fb *FileBin) SaveFile(f multipart.File, h *multipart.FileHeader) {
+func (fb *FileBin) SaveFile(f multipart.File, h *multipart.FileHeader) (tooBig bool) {
 	var filename = strconv.Itoa(int(time.Now().UnixMilli())) + "_" + h.Filename
 	persistedFile, _ := os.Create(path.Join(fb.config.BinDir, filename))
 
@@ -37,8 +37,10 @@ func (fb *FileBin) SaveFile(f multipart.File, h *multipart.FileHeader) {
 		l := utils.ReaderLen(f)
 		if int64(l) > fb.config.MaxFileSize {
 			log.Printf("File %s above set size limit, truncating from %d to %d bytes", filename, l, fb.config.MaxFileSize)
+			tooBig = true
 		}
 	} else {
+		tooBig = false
 		io.Copy(persistedFile, f)
 	}
 	persistedFile.Close()
@@ -52,7 +54,8 @@ func (fb *FileBin) SaveFile(f multipart.File, h *multipart.FileHeader) {
 			i += 1
 			log.Printf("Removed old file %s", files[i].Name())
 		}
-	}	
+	}
+	return
 }
 
 func (fb *FileBin) Count() int {
