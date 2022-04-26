@@ -15,47 +15,66 @@ body {
 	border-color: #aa00aa;
 	border-radius: 1em;
 
-	margin: 10px;
-	padding: 10px;
-	display: grid;
-	grid-template-columns: 20% auto 20%;
+	margin-bottom: 1em;
+	padding: 0.5em;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	text-align: center;
 }
 
 .filelink {
-	display: grid;
-	grid-column: 2 2;
+	display: flex;
+	size: 1em;
+	padding: 0;
+	margin: 0;
+}
+
+.fileinfobox {
+	padding: 0;
+	margin-top: -3.7em;
+	display: flex;
+	flex-direction: row;
+	width: 100%;
 }
 
 .sizestamp {
-	display: grid;
-	grid-column: 1 1;
+	display: inline-block;
+	width: 100%;
 	text-align: left;
 }
 
 .timestamp {
-	display: grid;
-	grid-column: 3 3;
+	display: inline-block;
+	width: 100%;
 	text-align: right;
 }
 
-.imgContainer {
-	display: grid;
-	grid-column: span 3;
-	grid-row: 2 2;
-	text-align: center;
-	align-items: center;
-}
-
 .imagePreview {
-	display: grid;
+	display: inline-block;
 	grid-column: span 3;
 	grid-row: 2 2;
-	margin: auto;
+	margin: 1em;
 	max-width: 100%;
 	height: auto;
 }
 
-@media (prefers-color-scheme: dark){
+@media (max-width: 800px) {
+	.filelink {
+		margin-top: -1em;
+	}
+	.fileinfobox {
+		flex-direction: column;
+		margin-top: -1em;
+	}
+	.timestamp, .sizestamp {
+		text-align: center;
+		margin: 0;
+		padding: 0;
+	}
+}
+
+@media (prefers-color-scheme: dark) {
 	body { color: #fff; background: #000 }
 	a:link { color: #cdf }
 	a:hover, a:visited:hover { color: #def }

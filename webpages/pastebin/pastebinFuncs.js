@@ -39,11 +39,6 @@ function populateFileContainer(details, fileContainer) {
 	let prettyName = name.substr(name.search("_")+1, name.length);
 	let date = new Date(parseInt(name.substr(0, name.search("_"))));
 
-	let sizestamp = document.createElement("p");
-	sizestamp.innerText = prettySize(details.Size);
-	sizestamp.classList.add("sizestamp");
-	fileContainer.append(sizestamp);
-	
 	let filename = document.createElement("h3");
 	let link = document.createElement("a");
 	link.href = details.Path;
@@ -52,10 +47,20 @@ function populateFileContainer(details, fileContainer) {
 	link.append(filename);
 	fileContainer.append(link);
 
+	let fileInfoBox = document.createElement("div");
+	fileInfoBox.classList.add("fileinfobox");
+
+	let sizestamp = document.createElement("p");
+	sizestamp.innerText = prettySize(details.Size);
+	sizestamp.classList.add("sizestamp");
+	fileInfoBox.append(sizestamp);
+
 	let timestamp = document.createElement("p");
 	timestamp.innerText = date.toLocaleString();
 	timestamp.classList.add("timestamp");
-	fileContainer.append(timestamp);
+	fileInfoBox.append(timestamp);
+
+	fileContainer.append(fileInfoBox);
 
 	if (details.Type.includes("image")) {
 		fileContainer.classList.add("imgContainer");
