@@ -26,7 +26,7 @@ function logBase(b, e) {
 }
 
 function prettySize(bytes) {
-	let suffixes = ["B", "KiB", "MiB", "TiB"];
+	let suffixes = ["B", "KiB", "MiB", "GiB"];
 	let logB1024 = Number.parseInt(logBase(1024, bytes));
 	let suffix = suffixes[logB1024];
 	let num = (bytes / (1024 ** logB1024)).toFixed(2);
