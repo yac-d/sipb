@@ -3,54 +3,61 @@ package configdef
 import (
 	"gopkg.in/yaml.v2"
 	"io/ioutil"
-	"log"
 	"path"
 	"os"
+	"reflect"
 	"strconv"
 )
 
 type Config struct {
-	BinPath     string `yaml:"BinPath"`
+	BinPath     string `yaml:"BinPath" env:"SIPB_BIN_PATH"`
 	BinDir      string
-	WebpageDir  string `yaml:"WebpageDir"`
-	Port        int    `yaml:"Port"`
-	BindAddr    string `yaml:"BindAddr"`
-	MaxFileCnt  int    `yaml:"MaxFileCnt"`
-	MaxFileSize int64  `yaml:"MaxFileSize"` // Bytes
+	WebpageDir  string `yaml:"WebpageDir" env:"SIPB_WEBPAGE_DIR"`
+	Port        int    `yaml:"Port" env:"SIPB_PORT"`
+	BindAddr    string `yaml:"BindAddr" env:"SIPB_BIND_ADDR"`
+	MaxFileCnt  int    `yaml:"MaxFileCnt" env:"SIPB_MAX_FILE_CNT"`
+	MaxFileSize int64  `yaml:"MaxFileSize" env:"SIPB_MAX_FILE_SIZE"` // Bytes
 }
 
 //ReadFromYAML reads config information from the YAML file at the specified path
-func (c *Config) ReadFromYAML(fp string) {
+func (c *Config) ReadFromYAML(fp string) error {
 	configfileBytes, err := ioutil.ReadFile(fp)
-	if err != nil {
-		log.Fatalln("Unable to read config file")
-	}
 	yaml.Unmarshal(configfileBytes, c)
 	c.BinDir = path.Join(c.WebpageDir, c.BinPath)
+	return err
 }
 
 //ReadFromEnvVars reads config information from environment variables
-func (c *Config) ReadFromEnvVars() {
-	if val, set := os.LookupEnv("SIPB_PORT"); set {
-		p, _ := strconv.Atoi(val)
-		c.Port = p
+//Whatever you do, never stop using this. This took WAY too long to write.
+func (c *Config) ReadFromEnvVars() error {
+	cType := reflect.ValueOf(*c).Type()
+	cElem := reflect.ValueOf(c).Elem()
+
+	for i:=0; i<reflect.ValueOf(*c).NumField(); i++ {
+		field := cType.Field(i)
+		fieldVal := cElem.Field(i)
+		tag, tagExists := field.Tag.Lookup("env")
+		if tagExists {
+			envVar, envVarExists := os.LookupEnv(tag)
+			if envVarExists {
+				var err error
+				switch field.Type.Kind() {
+				case reflect.Int:
+					val, e := strconv.Atoi(envVar)
+					fieldVal.Set(reflect.ValueOf(val))
+					err = e
+				case reflect.Int64:
+					val, e := strconv.ParseInt(envVar, 10, 64) // strconv.Atoi can't return int64
+					fieldVal.Set(reflect.ValueOf(val))
+					err = e
+				case reflect.String:
+					fieldVal.Set(reflect.ValueOf(envVar))
+				}
+				if err != nil {
+					return err
+				}
+			}
+		}
 	}
-	if val, set := os.LookupEnv("SIPB_BIN_PATH"); set {
-		c.BinPath = val
-		c.BinDir = path.Join(c.WebpageDir, c.BinPath)
-	}
-	if val, set := os.LookupEnv("SIPB_WEBPAGE_DIR"); set {
-		c.WebpageDir = val
-	}
-	if val, set := os.LookupEnv("SIPB_BIND_ADDR"); set {
-		c.BindAddr = val
-	}
-	if val, set := os.LookupEnv("SIPB_MAX_FILE_CNT"); set {
-		cnt, _ := strconv.Atoi(val)
-		c.MaxFileCnt = cnt
-	}
-	if val, set := os.LookupEnv("SIPB_MAX_FILE_SIZE"); set {
-		size, _ := strconv.ParseInt(val, 10, 64) // strconv.Atoi can't return int64
-		c.MaxFileSize = size
-	}
+	return nil
 }

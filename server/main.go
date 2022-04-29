@@ -15,10 +15,15 @@ import (
 
 func main() {
 	var config configdef.Config
-	config.ReadFromYAML("./config.yaml")
+	if err := config.ReadFromYAML("./config.yaml"); err != nil {
+		log.Fatalln("Error reading configuration from ./config.yaml")
+	}
 	log.Printf("Read configuration from ./config.yaml")
+
 	// Overrides config from file only for environment variables that are set (unset ones are ignored)
-	config.ReadFromEnvVars()
+	if err := config.ReadFromEnvVars(); err != nil {
+		log.Fatalln("Error reading configuration from environment variables")
+	}
 	log.Printf("Read configuration from environment variables")
 
 	var bin = filebin.NewFromConfig(config)
