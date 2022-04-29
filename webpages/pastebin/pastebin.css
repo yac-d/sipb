@@ -7,6 +7,7 @@ body {
 	margin: lem auto;
 	padding: 0 .62em;
 	font: 1.2em/1.62 sans-serif;
+	background: #cccccc;
 }
 
 .fileContainer {
@@ -19,8 +20,11 @@ body {
 	padding: 0.5em;
 	display: flex;
 	flex-direction: column;
-	align-items: center;
+
+	overflow-wrap: break-word;
+	word-break: break-all;
 	text-align: center;
+	align-items: center;
 }
 
 .filelink {
@@ -29,6 +33,9 @@ body {
 	padding: 0;
 	margin: 0;
 	z-index: 2;
+	text-decoration: none;
+
+	color: #00aaff;
 }
 
 .fileinfobox {
@@ -78,10 +85,8 @@ body {
 
 @media (prefers-color-scheme: dark) {
 	body { color: #fff; background: #000 }
-	a:link { color: #cdf }
-	a:hover, a:visited:hover { color: #def }
-	a:visited { color: #dcf }
-	.filechooserBtn { color: #000000 }
+	.filelink:link .filelink:active .filelink:visited { color: #00aaff; }
+	.filechooserBtn { color: #000000 };
 }
 
 .fccontainer {
@@ -97,7 +102,8 @@ body {
 	background-color: #00ee11;
 	border-radius: 5px;
 	margin-left: -10px;
-	z-index: 1;
+	z-index: 2;
+	transition: border-radius ease-in-out 0.5s;
 }
 
 .filechooserWidget {
@@ -107,9 +113,24 @@ body {
 	opacity: 0;
 	-moz-opacity: 0;
 	filter: alpha(opacity: 0);
-	z-index: 2;
+	z-index: 1;
 	margin-top: -3em;
 	width: 100px;
+}
+
+@media (any-hover: hover) {
+	.filechooserBtn:hover {
+		background-color: #ffaa00;
+		border-radius: 20px;
+		transition: border-radius ease-in-out 0.5s;
+	}
+
+	.filelink:hover {
+		background-image: linear-gradient(to left, #00aaff, #aa00aa);
+		color: transparent;
+		background-clip: text;
+		-webkit-background-clip: text;
+	}
 }
 
 h1, h2, h3 {
