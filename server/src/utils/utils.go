@@ -5,7 +5,6 @@ import (
 	"log"
 	"bytes"
 	"io"
-	"strings"
 )
 
 func FileExists(path string) bool {
@@ -19,14 +18,4 @@ func ReaderLen(r io.Reader) int {
 	var buf bytes.Buffer
 	buf.ReadFrom(r)
 	return len(buf.Bytes())
-}
-
-func StringsStartingWith(arr []string, substr string) []string {
-	filtered := make([]string, 0)
-	for _, str := range arr {
-		if strings.HasPrefix(str, substr) {
-			filtered = append(filtered, str)
-		}
-	}
-	return filtered
 }

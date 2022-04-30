@@ -28,36 +28,33 @@ func (c *Config) ReadFromYAML(fp string) error {
 }
 
 //ReadFromEnvVars reads config information from environment variables
-//Whatever you do, never stop using this. This took WAY too long to write.
-func (c *Config) ReadFromEnvVars() error {
-	cType := reflect.ValueOf(*c).Type()
+//Whatever you do, never stop using this, because it took WAY too long to write.
+func (c *Config) ReadFromEnvVars() (err error) {
+	cVal := reflect.ValueOf(*c)
+	cType := cVal.Type()
 	cElem := reflect.ValueOf(c).Elem()
 
-	for i:=0; i<reflect.ValueOf(*c).NumField(); i++ {
+	for i:=0; i<cVal.NumField(); i++ {
 		field := cType.Field(i)
 		fieldVal := cElem.Field(i)
 		tag, tagExists := field.Tag.Lookup("env")
 		if tagExists {
 			envVar, envVarExists := os.LookupEnv(tag)
 			if envVarExists {
-				var err error
+				var val any
 				switch field.Type.Kind() {
 				case reflect.Int:
-					val, e := strconv.Atoi(envVar)
-					fieldVal.Set(reflect.ValueOf(val))
-					err = e
+					val, err = strconv.Atoi(envVar)
 				case reflect.Int64:
-					val, e := strconv.ParseInt(envVar, 10, 64) // strconv.Atoi can't return int64
-					fieldVal.Set(reflect.ValueOf(val))
-					err = e
+					val, err = strconv.ParseInt(envVar, 10, 64) // strconv.Atoi can't return int64
 				case reflect.String:
-					fieldVal.Set(reflect.ValueOf(envVar))
+					val = envVar
 				}
-				if err != nil {
-					return err
-				}
+				fieldVal.Set(reflect.ValueOf(val))
 			}
 		}
 	}
-	return nil
+	c.BinDir = path.Join(c.WebpageDir, c.BinPath)
+
+	return
 }
