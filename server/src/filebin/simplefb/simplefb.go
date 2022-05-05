@@ -15,20 +15,20 @@ import (
 	"strconv"
 )
 
-type FileBin struct {
+type SimpleFileBin struct {
 	config configdef.Config
 }
 
-func NewFromConfig(c configdef.Config) FileBin {
-	var fb = FileBin{config: c}
+func New(c configdef.Config) *SimpleFileBin {
+	var fb = SimpleFileBin{config: c}
 	if !utils.FileExists(c.BinDir) {
 		os.MkdirAll(c.BinDir, 0755)
 		log.Printf("Creating bin directory %s", c.BinDir)
 	}
-	return fb
+	return &fb
 }
 
-func (fb *FileBin) SaveFile(f multipart.File, h *multipart.FileHeader) (tooBig bool) {
+func (fb *SimpleFileBin) SaveFile(f multipart.File, h *multipart.FileHeader) (tooBig bool) {
 	var filename = strconv.Itoa(int(time.Now().UnixMilli())) + "_" + h.Filename
 	persistedFile, _ := os.Create(path.Join(fb.config.BinDir, filename))
 
@@ -58,12 +58,12 @@ func (fb *FileBin) SaveFile(f multipart.File, h *multipart.FileHeader) (tooBig b
 	return
 }
 
-func (fb *FileBin) Count() int {
+func (fb *SimpleFileBin) Count() int {
 	files, _ := ioutil.ReadDir(fb.config.BinDir)
 	return len(files)
 }
 
-func (fb *FileBin) DetailsOfNthNewest(n int) (fd filedetails.FileDetails, err error) {
+func (fb *SimpleFileBin) DetailsOfNthNewest(n int) (fd filedetails.FileDetails, err error) {
 	files, err := ioutil.ReadDir(fb.config.BinDir)
 
 	if n > len(files) || n < 1 {
