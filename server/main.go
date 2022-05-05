@@ -10,7 +10,7 @@ import (
 	"log"
 
 	"github.com/Eeshaan-rando/sipb/src/configdef"
-	"github.com/Eeshaan-rando/sipb/src/filebin"
+	sfb "github.com/Eeshaan-rando/sipb/src/filebin/simplefb"
 )
 
 func main() {
@@ -26,10 +26,10 @@ func main() {
 	}
 	log.Printf("Read configuration from environment variables")
 
-	var bin = filebin.NewFromConfig(config)
+	var bin = sfb.NewFromConfig(config)
 
 	saveFile := func(w http.ResponseWriter, request *http.Request) {
-		request.ParseMultipartForm(32000000)
+		request.ParseMultipartForm(64000000)
 		incomingFile, h, err := request.FormFile("file")
 
 		log.Printf("Receiving file %s", h.Filename)
