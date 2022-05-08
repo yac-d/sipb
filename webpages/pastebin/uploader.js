@@ -1,10 +1,5 @@
-function uploadFile() {
+function uploadFormData(formdata) {
 	return new Promise(function(resolve, reject) {
-		chooser = document.getElementById("filechooser");
-		if (chooser.value == "") {
-			reject(new Error("File to upload not selected"));
-			return;
-		}
 
 		let xhr = new XMLHttpRequest();
 		xhr.onreadystatechange = function() {
@@ -16,7 +11,7 @@ function uploadFile() {
 			}
 		}
 		xhr.open("POST", "/upload", true);
-		xhr.send(new FormData(uploadForm));
+		xhr.send(formdata);
 	});
 }
 
@@ -37,13 +32,38 @@ function refreshFileList() {
 	});
 }
 
-function uploadAndRefresh() {
+function uploadOnClick() {
+	chooser = document.getElementById("filechooser");
+	if (chooser.value == "") {
+		alert("File to upload not selected");
+		return;
+	}
 	document.getElementById("spinner").style.display = "inline-block";
-	let p = uploadFile();
+	let p = uploadFormData(FormData(uploadForm));
 	p.then(function() {
 		chooser.value = "";
 		refreshFileList();
 	});
-	p.catch((e) => alert("Select a file first!"));
 	p.finally(() => document.getElementById("spinner").style.display = "none");
+}
+
+function uploadOnPaste() {
+	document.getElementById("spinner").style.display = "inline-block";
+	let fd = new FormData();
+	fd.append("file", event.dataTransfer.files[0]);
+	let p = uploadFormData(fd);
+	p.then(refreshFileList);
+	p.finally(() => document.getElementById("spinner").style.display = "none");
+}
+
+function handleDragAndDrop(event) {
+	console.log("Dropped");
+	event.preventDefault();
+	console.log(event.dataTransfer);
+	uploadOnPaste();
+}
+
+function handleDragOver(event) {
+	event.preventDefault();
+	console.log("Dragged over");
 }

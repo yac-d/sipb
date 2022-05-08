@@ -12,9 +12,9 @@
 	</head>
 	<body onload="loadFiles()">
 		<form id="uploadForm" enctype="multipart/form-data">
-			<div class="fccontainer">
+			<div class="fccontainer" ondrop="handleDragAndDrop(event)" ondragover="handleDragOver(event)">
 				<label class="filechooserBtn" for="filechooser">Upload file</label>
-				<input id="filechooser" name="file" type="file" class="filechooserWidget" onchange="uploadAndRefresh()"/>
+				<input id="filechooser" name="file" type="file" class="filechooserWidget" onchange="uploadOnClick()"/>
 			</div>
 		</form>
 		<div id="spinner" class="spinner"></div>
