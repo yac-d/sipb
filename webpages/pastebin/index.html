@@ -11,8 +11,9 @@
 		<script src="./infiniteScroll.js"></script>
 	</head>
 	<body onload="loadFiles()">
+		<div id="dropzone">
 		<form id="uploadForm" enctype="multipart/form-data">
-			<div class="fccontainer" ondrop="handleDragAndDrop(event)" ondragover="handleDragOver(event)">
+			<div id="fccontainer" class="fccontainer" ondragenter="handleDragEnter(event)" ondragleave="handleDragLeave(event)">
 				<label class="filechooserBtn" for="filechooser">Upload file</label>
 				<input id="filechooser" name="file" type="file" class="filechooserWidget" onchange="uploadOnClick()"/>
 			</div>
@@ -21,5 +22,6 @@
 
 		<h1 id="count">View the latest files uploaded to the pastebin here.</h1>
 		<div id="container"></div>
+		</div>
 	</body>
 </html>

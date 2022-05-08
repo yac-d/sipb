@@ -92,6 +92,7 @@ body {
 .fccontainer {
 	position: relative;
 	align-items: center;
+	height: 50px;
 }
 
 .filechooserBtn {

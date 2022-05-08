@@ -39,7 +39,7 @@ function uploadOnClick() {
 		return;
 	}
 	document.getElementById("spinner").style.display = "inline-block";
-	let p = uploadFormData(FormData(uploadForm));
+	let p = uploadFormData(new FormData(uploadForm));
 	p.then(function() {
 		chooser.value = "";
 		refreshFileList();
@@ -47,23 +47,32 @@ function uploadOnClick() {
 	p.finally(() => document.getElementById("spinner").style.display = "none");
 }
 
-function uploadOnPaste() {
+function uploadOnDrop(event) {
+	event.preventDefault();
+	let file = event.dataTransfer.files[0];
+	if (file.size < 1) { // Folders have 0 size
+		alert("Folder or empty file. Ignoring.");
+		return;
+	}
+
 	document.getElementById("spinner").style.display = "inline-block";
 	let fd = new FormData();
-	fd.append("file", event.dataTransfer.files[0]);
+	fd.append("file", file);
+
 	let p = uploadFormData(fd);
 	p.then(refreshFileList);
 	p.finally(() => document.getElementById("spinner").style.display = "none");
 }
 
-function handleDragAndDrop(event) {
-	console.log("Dropped");
+function handleDragover(event) {
 	event.preventDefault();
-	console.log(event.dataTransfer);
-	uploadOnPaste();
+}
+function handleDragEnter(event) {
+	event.target.style.opacity = "50%";
+}
+function handleDragLeave(event) {
+	event.target.style.opacity = "100%";
 }
 
-function handleDragOver(event) {
-	event.preventDefault();
-	console.log("Dragged over");
-}
+document.addEventListener("dragover", handleDragover);
+document.addEventListener("drop", uploadOnDrop);
