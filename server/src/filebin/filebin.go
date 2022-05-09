@@ -7,7 +7,7 @@ import (
 )
 
 type FileBin interface {
-	SaveFile(f multipart.File, h *multipart.FileHeader) bool
+	SaveFile(f multipart.File, h *multipart.FileHeader) int64
 	DetailsOfNthNewest(n int) (filedetails.FileDetails, error)
 	Count() int
 }

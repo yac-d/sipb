@@ -28,7 +28,7 @@ func New(c configdef.Config) *SimpleFileBin {
 	return &fb
 }
 
-func (fb *SimpleFileBin) SaveFile(f multipart.File, h *multipart.FileHeader) (tooBig bool) {
+func (fb *SimpleFileBin) SaveFile(f multipart.File, h *multipart.FileHeader) (truncatedBy int64) {
 	var filename = strconv.Itoa(int(time.Now().UnixMilli())) + "_" + h.Filename
 	persistedFile, _ := os.Create(path.Join(fb.config.BinDir, filename))
 
@@ -37,10 +37,10 @@ func (fb *SimpleFileBin) SaveFile(f multipart.File, h *multipart.FileHeader) (to
 		l := utils.ReaderLen(f)
 		if int64(l) > fb.config.MaxFileSize {
 			log.Printf("File %s above set size limit, truncating from %d to %d bytes", filename, l, fb.config.MaxFileSize)
-			tooBig = true
+			truncatedBy = int64(l) - fb.config.MaxFileSize
 		}
 	} else {
-		tooBig = false
+		truncatedBy = 0
 		io.Copy(persistedFile, f)
 	}
 	persistedFile.Close()

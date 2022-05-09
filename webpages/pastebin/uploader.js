@@ -5,7 +5,7 @@ function uploadFormData(formdata) {
 		xhr.onreadystatechange = function() {
 			if (this.readyState == 4) {
 				if (this.status == 413) {
-					alert("File uploaded too large! Truncated to maximum size.");
+					alert("File uploaded too large! Last " + prettySize(parseInt(this.responseText)) + " truncated.");
 				}
 				resolve("Done!");
 			}

@@ -30,8 +30,9 @@ func (srv *HTTPSrv) handleSave(w http.ResponseWriter, request *http.Request) {
 		return
 	}
 
-	if srv.filebin.SaveFile(incomingFile, h) { // checking if file had to be truncated
+	if trunc := srv.filebin.SaveFile(incomingFile, h); trunc > 0 { // checking if file had to be truncated
 		w.WriteHeader(http.StatusRequestEntityTooLarge)
+		w.Write([]byte(strconv.FormatInt(trunc, 10)))
 	}
 }
 
