@@ -52,6 +52,7 @@ function uploadOnDrop(event) {
 	let file = event.dataTransfer.files[0];
 	if (file.size < 1) { // Folders have 0 size
 		alert("Folder or empty file. Ignoring.");
+		handleDragLeave();
 		return;
 	}
 
@@ -62,17 +63,16 @@ function uploadOnDrop(event) {
 	let p = uploadFormData(fd);
 	p.then(refreshFileList);
 	p.finally(() => document.getElementById("spinner").style.display = "none");
+
+	handleDragLeave();
 }
 
-function handleDragover(event) {
+function handleDragover() {
 	event.preventDefault();
+	document.getElementById("dropzone").classList.add("dropzoneHover");
 }
-function handleDragEnter(event) {
-	event.target.style.opacity = "50%";
-}
-function handleDragLeave(event) {
-	event.target.style.opacity = "100%";
+function handleDragLeave() {
+	document.getElementById("dropzone").classList.remove("dropzoneHover");
 }
 
-document.addEventListener("dragover", handleDragover);
 document.addEventListener("drop", uploadOnDrop);

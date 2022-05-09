@@ -11,9 +11,9 @@
 		<script src="./infiniteScroll.js"></script>
 	</head>
 	<body onload="loadFiles()">
-		<div id="dropzone">
+		<div id="dropzone" ondragover="handleDragover()" ondragleave="handleDragLeave()">
 		<form id="uploadForm" enctype="multipart/form-data">
-			<div id="fccontainer" class="fccontainer" ondragenter="handleDragEnter(event)" ondragleave="handleDragLeave(event)">
+			<div id="fccontainer" class="fccontainer">
 				<label class="filechooserBtn" for="filechooser">Upload file</label>
 				<input id="filechooser" name="file" type="file" class="filechooserWidget" onchange="uploadOnClick()"/>
 			</div>

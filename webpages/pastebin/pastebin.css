@@ -166,3 +166,10 @@ h1, h2, h3 {
 	animation-play-state: inherit;
 	will-change: transform;
 }
+
+#dropzone {
+	height: 100em;
+}
+.dropzoneHover {
+	opacity: 50%;
+}
