@@ -1,18 +1,20 @@
 package simplefb
 
 import (
-	"github.com/Eeshaan-rando/sipb/src/configdef"
-	"github.com/Eeshaan-rando/sipb/src/utils"
-	"github.com/Eeshaan-rando/sipb/src/filebin/filedetails"
-	"os"
-	"log"
+	"errors"
 	"io"
+	"io/fs"
 	"io/ioutil"
 	"mime/multipart"
-	"time"
+	"os"
 	"path"
-	"errors"
 	"strconv"
+	"time"
+
+	"github.com/Eeshaan-rando/sipb/src/configdef"
+	"github.com/Eeshaan-rando/sipb/src/filebin"
+	"github.com/Eeshaan-rando/sipb/src/filebin/filedetails"
+	"github.com/Eeshaan-rando/sipb/src/utils"
 )
 
 type SimpleFileBin struct {
@@ -23,55 +25,74 @@ func New(c configdef.Config) *SimpleFileBin {
 	var fb = SimpleFileBin{config: c}
 	if !utils.FileExists(c.BinDir) {
 		os.MkdirAll(c.BinDir, 0755)
-		log.Printf("Creating bin directory %s", c.BinDir)
 	}
 	return &fb
 }
 
-func (fb *SimpleFileBin) SaveFile(f multipart.File, h *multipart.FileHeader) (truncatedBy int64) {
+func (fb *SimpleFileBin) SaveFile(f multipart.File, h *multipart.FileHeader) filebin.SaveFileResult {
 	var filename = strconv.Itoa(int(time.Now().UnixMilli())) + "_" + h.Filename
-	persistedFile, _ := os.Create(path.Join(fb.config.BinDir, filename))
+	var result = filebin.SaveFileResult{TruncatedBytes: 0, Error: nil, Filename: filename}
+	persistedFile, err := os.Create(path.Join(fb.config.BinDir, filename))
+	if err != nil {
+		result.Error = err
+	}
 
 	if fb.config.MaxFileSize > -1 {
 		io.CopyN(persistedFile, f, fb.config.MaxFileSize)
-		l := utils.ReaderLen(f)
-		if int64(l) > fb.config.MaxFileSize {
-			log.Printf("File %s above set size limit, truncating from %d to %d bytes", filename, l, fb.config.MaxFileSize)
-			truncatedBy = int64(l) - fb.config.MaxFileSize
+		l := int64(utils.ReaderLen(f))
+		if l > fb.config.MaxFileSize {
+			result.TruncatedBytes = l - fb.config.MaxFileSize
 		}
 	} else {
-		truncatedBy = 0
 		io.Copy(persistedFile, f)
 	}
 	persistedFile.Close()
-	log.Printf("File %s saved as %s", h.Filename, filename)
 
+	err = fb.RemoveOldFiles()
+	if err != nil {
+		result.Error = err
+	}
+
+	return result
+}
+
+func (fb *SimpleFileBin) RemoveOldFiles() error {
+	var err error = nil
+	var files []fs.FileInfo
 	if fb.config.MaxFileCnt != -1 {
-		files, _ := ioutil.ReadDir(fb.config.BinDir)
+		files, err = ioutil.ReadDir(fb.config.BinDir)
 		var i = 0
-		for len(files) - i > fb.config.MaxFileCnt {
+		for len(files)-i > fb.config.MaxFileCnt {
 			os.Remove(path.Join(fb.config.BinDir, files[i].Name()))
 			i += 1
-			log.Printf("Removed old file %s", files[i].Name())
 		}
 	}
+	return err
+}
+
+func (fb *SimpleFileBin) Count() (result filebin.FileCountResult) {
+	files, err := ioutil.ReadDir(fb.config.BinDir)
+	result.Count = len(files)
+	result.Error = err
 	return
 }
 
-func (fb *SimpleFileBin) Count() int {
-	files, _ := ioutil.ReadDir(fb.config.BinDir)
-	return len(files)
-}
-
-func (fb *SimpleFileBin) DetailsOfNthNewest(n int) (fd filedetails.FileDetails, err error) {
+func (fb *SimpleFileBin) DetailsOfNthNewest(n int) (fd filedetails.FileDetails, result filebin.FileDetailsResult) {
 	files, err := ioutil.ReadDir(fb.config.BinDir)
+	if err != nil {
+		result.Error = err
+	}
 
 	if n > len(files) || n < 1 {
 		err = errors.New("Invalid request for details")
+		if err != nil {
+			result.Error = err
+		}
 		return
 	}
- 
-	var filename = files[len(files) - n].Name()
+
+	var filename = files[len(files)-n].Name()
 	fd = filedetails.New(path.Join(fb.config.BinDir, filename), path.Join(fb.config.BinPath, filename))
+	result.Filename = filename
 	return
 }

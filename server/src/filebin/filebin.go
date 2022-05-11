@@ -7,7 +7,23 @@ import (
 )
 
 type FileBin interface {
-	SaveFile(f multipart.File, h *multipart.FileHeader) int64
-	DetailsOfNthNewest(n int) (filedetails.FileDetails, error)
-	Count() int
+	SaveFile(f multipart.File, h *multipart.FileHeader) SaveFileResult
+	DetailsOfNthNewest(n int) (filedetails.FileDetails, FileDetailsResult)
+	Count() FileCountResult
+}
+
+type SaveFileResult struct {
+	Error          error
+	TruncatedBytes int64
+	Filename       string
+}
+
+type FileDetailsResult struct {
+	Error    error
+	Filename string
+}
+
+type FileCountResult struct {
+	Error error
+	Count int
 }
