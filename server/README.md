@@ -35,3 +35,16 @@ Environment variables, if defined, can override these values. They are:
 - Run the server with `./sipb`. Ensure your `config.yaml` is in the folder from which you are running the server.
 - Launch a browser and go to `address-you-bound-to.com/pastebin`.
 - Paste away!
+
+## HTTP Requests
+
+A `GET` request to `/retrieve/fileCount` returns the file count as a decimal-formatted string.
+
+Fetching details of the last nth uploaded file is done by sending a `POST` request, whose content is n as decimal-formatted string, to `/retrieve`.
+The response is in JSON format, with the following fields:
+
+- `Path`: URL to the file itself
+- `Size`: File size in bytes
+- `Type`: MIME type of the file
+
+Uploading a file is done by `POST`ing a multipart form data request to `/upload`. The key/name for the file in the form should be `file`.
