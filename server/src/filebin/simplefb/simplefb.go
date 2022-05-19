@@ -6,6 +6,7 @@ import (
 	"io/fs"
 	"io/ioutil"
 	"mime/multipart"
+	"net/http"
 	"os"
 	"path"
 	"strconv"
@@ -92,7 +93,26 @@ func (fb *SimpleFileBin) DetailsOfNthNewest(n int) (fd filedetails.FileDetails, 
 	}
 
 	var filename = files[len(files)-n].Name()
-	fd = filedetails.New(path.Join(fb.config.BinDir, filename), path.Join(fb.config.BinPath, filename))
+	fd, err = fb.detailsOf(path.Join(fb.config.BinDir, filename), path.Join(fb.config.BinPath, filename))
+	if err != nil {
+		result.Error = err
+		return
+	}
 	result.Filename = filename
 	return
+}
+
+func (fb *SimpleFileBin) detailsOf(fileloc, urlpath string) (filedetails.FileDetails, error) {
+	f, err := os.Open(fileloc)
+	var fHeader = make([]byte, 512)
+	f.Read(fHeader)
+	fInfo, err := f.Stat()
+	f.Close()
+
+	var details filedetails.FileDetails
+	details.Type = http.DetectContentType(fHeader)
+	details.Path = urlpath
+	details.Size = fInfo.Size()
+
+	return details, err
 }
