@@ -1,6 +1,8 @@
 # CLI Client
 
-So far, only a small python API has been written. Refer to the following to use it.
+So far, only a small python API has been written. It depends on the `requests` library. Refer to the following to use it.
+
+---
 
 ```
 class Pastebin(host, port=80, basicauth=None, https=False, pastebinroot="/")
@@ -18,17 +20,19 @@ An SIPB server serves the webpage at `/pastebin`. So, for example, if the pasteb
 Pastebin.count()
 ```
 
-Returns the file count on the server.
+Returns the file count on the server. Raises an exception for HTTP response codes <400.
 
 ```
 Pastebin.detailsOfNthNewest(n)
 ```
 
 Returns a dictionary containing the URL `Path`, `Size` in bytes, and MIME `Type` of the last nth uploaded file.
-0<`n`<=`Pastebin.count()`.
+0<`n`<=`Pastebin.count()`. Raises an exception for HTTP response codes <400.
 
 ```
 Pastebin.upload(filepath)
 ```
 
-Uploads the file at `filepath`.
+Uploads the file at `filepath` and returns the number of bytes truncated. Raises an exception for HTTP response codes <400 and !=413.
+
+---
