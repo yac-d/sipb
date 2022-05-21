@@ -20,19 +20,19 @@ An SIPB server serves the webpage at `/pastebin`. So, for example, if the pasteb
 Pastebin.count()
 ```
 
-Returns the file count on the server. Raises an exception for HTTP response codes <400.
+Returns the file count on the server. Raises an exception for HTTP response codes >=400.
 
 ```
 Pastebin.detailsOfNthNewest(n)
 ```
 
 Returns a dictionary containing the URL `Path`, `Size` in bytes, and MIME `Type` of the last nth uploaded file.
-0<`n`<=`Pastebin.count()`. Raises an exception for HTTP response codes <400.
+0<`n`<=`Pastebin.count()`. Raises an exception for HTTP response codes >=400.
 
 ```
 Pastebin.upload(filepath)
 ```
 
-Uploads the file at `filepath` and returns the number of bytes truncated. Raises an exception for HTTP response codes <400 and !=413.
+Uploads the file at `filepath` and returns the number of bytes truncated. Raises an exception for HTTP response codes >=400 and !=413.
 
 ---
