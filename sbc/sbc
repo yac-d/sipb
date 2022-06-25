@@ -12,7 +12,7 @@ fi
 
 usage () {
 	echo >&2 "$PN - execute simple pastebin commands, $VER
-usage: $PN [-h] [-l number] [-s pattern] [-o pattern] ..." 
+usage: $PN [-h] [-l number] [-s pattern] [-o pattern] [-f file] ..." 
 	exit 1
 }
 
