@@ -17,3 +17,7 @@ domain:https://iamagiantdolt.com:67
 * Clean up the script, some parts are hacky (OK, it is all very hacky, but it works, at least for me).
 * Create a makefile that does a proper installation of the script
 * Create a manual page
+
+# Dependencies:
+* Coreutils
+* cURL
