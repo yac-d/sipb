@@ -1,12 +1,13 @@
 package configdef
 
 import (
-	"gopkg.in/yaml.v2"
 	"io/ioutil"
-	"path"
 	"os"
+	"path"
 	"reflect"
 	"strconv"
+
+	"gopkg.in/yaml.v2"
 )
 
 type Config struct {
@@ -17,9 +18,12 @@ type Config struct {
 	BindAddr    string `yaml:"BindAddr" env:"SIPB_BIND_ADDR"`
 	MaxFileCnt  int    `yaml:"MaxFileCnt" env:"SIPB_MAX_FILE_CNT"`
 	MaxFileSize int64  `yaml:"MaxFileSize" env:"SIPB_MAX_FILE_SIZE"` // Bytes
+	DBHost      string `yaml:"DatabaseHost" env:"SIPB_DB_HOST"`
+	DBUser      string `yaml:"DatabaseUser" env:"SIPB_DB_USER"`
+	DBPasswd    string `yaml:"DatabasePasswd" env:"SIPB_DB_PASSWD"`
 }
 
-//ReadFromYAML reads config information from the YAML file at the specified path
+// ReadFromYAML reads config information from the YAML file at the specified path
 func (c *Config) ReadFromYAML(fp string) error {
 	configfileBytes, err := ioutil.ReadFile(fp)
 	yaml.Unmarshal(configfileBytes, c)
@@ -27,14 +31,14 @@ func (c *Config) ReadFromYAML(fp string) error {
 	return err
 }
 
-//ReadFromEnvVars reads config information from environment variables
-//Whatever you do, never stop using this, because it took WAY too long to write.
+// ReadFromEnvVars reads config information from environment variables
+// Whatever you do, never stop using this, because it took WAY too long to write.
 func (c *Config) ReadFromEnvVars() (err error) {
 	cVal := reflect.ValueOf(*c)
 	cType := cVal.Type()
 	cElem := reflect.ValueOf(c).Elem()
 
-	for i:=0; i<cVal.NumField(); i++ {
+	for i := 0; i < cVal.NumField(); i++ {
 		field := cType.Field(i)
 		fieldVal := cElem.Field(i)
 		tag, tagExists := field.Tag.Lookup("env")

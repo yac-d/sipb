@@ -35,14 +35,18 @@ func (srv *HTTPSrv) handleSave(w http.ResponseWriter, request *http.Request) {
 	}
 
 	result := srv.filebin.SaveFile(incomingFile, h)
-	result.Error = err
+	if srv.OnSave != nil {
+		defer srv.OnSave(result)
+	}
+
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
 	if result.TruncatedBytes > 0 {
 		w.WriteHeader(http.StatusRequestEntityTooLarge)
 		w.Write([]byte(strconv.FormatInt(result.TruncatedBytes, 10)))
-	}
-
-	if srv.OnSave != nil {
-		srv.OnSave(result)
 	}
 }
 

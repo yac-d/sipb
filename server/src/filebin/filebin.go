@@ -10,12 +10,14 @@ type FileBin interface {
 	SaveFile(f multipart.File, h *multipart.FileHeader) SaveFileResult
 	DetailsOfNthNewest(n int) (filedetails.FileDetails, FileDetailsResult)
 	Count() FileCountResult
+	RemoveOldFiles() error
 }
 
 type SaveFileResult struct {
 	Error          error
 	TruncatedBytes int64
 	Filename       string
+	Location       string
 }
 
 type FileDetailsResult struct {
