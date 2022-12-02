@@ -4,10 +4,10 @@ import (
 	"database/sql"
 	"fmt"
 	"io"
-	"log"
 	"mime/multipart"
 	"os"
 	"path"
+	"time"
 
 	"github.com/Eeshaan-rando/sipb/src/configdef"
 	"github.com/Eeshaan-rando/sipb/src/filebin"
@@ -73,7 +73,6 @@ func (fb *SQLFileBin) SaveFile(f multipart.File, h *multipart.FileHeader) filebi
 		return result
 	}
 
-	log.Println(id, h.Filename, filepath, written, mimetype)
 	_, err = fb.db.Exec("CALL INSERT_FILE(?, ?, ?, ?, ?)", id, h.Filename, filepath, written, mimetype)
 	if err != nil {
 		result.Error = err
@@ -81,14 +80,41 @@ func (fb *SQLFileBin) SaveFile(f multipart.File, h *multipart.FileHeader) filebi
 	}
 
 	result.Error = fb.RemoveOldFiles()
-
 	return result
 }
 
 func (fb *SQLFileBin) RemoveOldFiles() error {
-	cnt := fb.Count()
-	if cnt.Error != nil {
-		return cnt.Error
+	cntRes := fb.Count()
+	if cntRes.Error != nil {
+		return cntRes.Error
+	}
+	if cntRes.Count > fb.config.MaxFileCnt && fb.config.MaxFileCnt > 0 {
+		details, res := fb.DetailsOfNthNewest(fb.config.MaxFileCnt)
+		if res.Error != nil {
+			return res.Error
+		}
+
+		rows, err := fb.db.Query(
+			`SELECT item.id, fileitem.location
+			FROM item INNER JOIN fileitem ON item.id = fileitem.ID
+			WHERE item.ts < ?`,
+			details.Timestamp,
+		)
+		if err != nil {
+			return err
+		}
+		for rows.Next() {
+			var uuid, loc string
+			rows.Scan(&uuid, &loc)
+			err = os.Remove(loc)
+			if err != nil {
+				return err
+			}
+			_, err = fb.db.Exec("DELETE FROM item WHERE id = ?", uuid)
+			if err != nil {
+				return err
+			}
+		}
 	}
 	return nil
 }
@@ -101,7 +127,14 @@ func (fb *SQLFileBin) Count() (result filebin.FileCountResult) {
 
 func (fb *SQLFileBin) DetailsOfNthNewest(n int) (fd filedetails.FileDetails, result filebin.FileDetailsResult) {
 	row := fb.db.QueryRow("CALL NTH_MOST_RECENT_FILE(?)", n-1)
-	result.Error = row.Scan(&fd)
+
+	var timestampStr string
+	result.Error = row.Scan(&fd.ID, &fd.Name, &fd.Location, &fd.Size, &fd.Type, &timestampStr)
+	if result.Error != nil {
+		return
+	}
+
 	result.Filename = fd.Name
+	fd.Timestamp, result.Error = time.Parse("2006-01-02 15:04:05", timestampStr)
 	return
 }
