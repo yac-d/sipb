@@ -6,12 +6,12 @@ import (
 )
 
 type FileDetails struct {
-	ID        string    `json:"id"`
-	Name      string    `json:"filename"`
-	Location  string    `json:"location"`
-	Size      int64     `json:"bytes"`
-	Type      string    `json:"mimetype"`
-	Timestamp time.Time `json:"ts"`
+	ID        string `json:"ID"`
+	Name      string `json:"Name"`
+	Location  string
+	Size      int64     `json:"Size"`
+	Type      string    `json:"Type"`
+	Timestamp time.Time `json:"Timestamp"`
 }
 
 func (d *FileDetails) AsJSON() []byte {

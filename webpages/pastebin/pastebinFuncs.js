@@ -34,15 +34,9 @@ function prettySize(bytes) {
 }
 
 function populateFileContainer(details, fileContainer) {
-	let pathElements = details.Path.split("/");
-	let name = pathElements[pathElements.length - 1];
-	let prettyName = name.substr(name.search("_")+1, name.length);
-	let date = new Date(parseInt(name.substr(0, name.search("_"))));
-
 	let filename = document.createElement("h3");
 	let link = document.createElement("a");
-	link.href = details.Path;
-	filename.innerText = prettyName;
+	filename.innerText = details.Name;
 	link.classList.add("filelink");
 	link.append(filename);
 	fileContainer.append(link);
@@ -56,12 +50,13 @@ function populateFileContainer(details, fileContainer) {
 	fileInfoBox.append(sizestamp);
 
 	let timestamp = document.createElement("p");
-	timestamp.innerText = date.toLocaleString();
+	timestamp.innerText = details.Timestamp.toLocaleString();
 	timestamp.classList.add("timestamp");
 	fileInfoBox.append(timestamp);
 
 	fileContainer.append(fileInfoBox);
 
+    /*
 	if (details.Type.includes("image")) {
 		fileContainer.classList.add("imgContainer");
 
@@ -71,6 +66,7 @@ function populateFileContainer(details, fileContainer) {
 
 		fileContainer.append(img);
 	}
+    */
 }
 
 function setFileCnt(cnt) {
