@@ -54,7 +54,11 @@ function populateFileContainer(details, fileContainer) {
 	fileInfoBox.append(sizestamp);
 
 	let timestamp = document.createElement("p");
-	timestamp.innerText = details.Timestamp.toLocaleString();
+    let options = {
+        weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', 
+        timeZone: "Asia/Kolkata", hour: 'numeric', minute: 'numeric', hour12: false
+    };
+	timestamp.innerText = Intl.DateTimeFormat("default", options).format(Date.parse(details.Timestamp));
 	timestamp.classList.add("timestamp");
 	fileInfoBox.append(timestamp);
 
