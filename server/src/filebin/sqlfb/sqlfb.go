@@ -90,6 +90,8 @@ func (fb *SQLFileBin) RemoveOldFiles() error {
 }
 
 func (fb *SQLFileBin) Count() (result filebin.FileCountResult) {
+	row := fb.db.QueryRow("SELECT COUNT(*) FROM item")
+	result.Error = row.Scan(&result.Count)
 	return
 }
 
