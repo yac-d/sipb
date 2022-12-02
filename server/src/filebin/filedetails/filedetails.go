@@ -5,9 +5,11 @@ import (
 )
 
 type FileDetails struct {
-	Type string
-	Path string
-	Size int64
+	ID       string `json:"id"`
+	Name     string `json:"filename"`
+	Location string `json:"location"`
+	Size     int64  `json:"bytes"`
+	Type     string `json:"mimetype"`
 }
 
 func (d *FileDetails) AsJSON() []byte {

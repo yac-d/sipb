@@ -86,6 +86,10 @@ func (fb *SQLFileBin) SaveFile(f multipart.File, h *multipart.FileHeader) filebi
 }
 
 func (fb *SQLFileBin) RemoveOldFiles() error {
+	cnt := fb.Count()
+	if cnt.Error != nil {
+		return cnt.Error
+	}
 	return nil
 }
 
@@ -96,5 +100,8 @@ func (fb *SQLFileBin) Count() (result filebin.FileCountResult) {
 }
 
 func (fb *SQLFileBin) DetailsOfNthNewest(n int) (fd filedetails.FileDetails, result filebin.FileDetailsResult) {
+	row := fb.db.QueryRow("CALL NTH_MOST_RECENT_FILE(?)", n-1)
+	result.Error = row.Scan(&fd)
+	result.Filename = fd.Name
 	return
 }
