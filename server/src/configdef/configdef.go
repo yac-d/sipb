@@ -3,7 +3,6 @@ package configdef
 import (
 	"io/ioutil"
 	"os"
-	"path"
 	"reflect"
 	"strconv"
 
@@ -11,8 +10,7 @@ import (
 )
 
 type Config struct {
-	BinPath     string `yaml:"BinPath" env:"SIPB_BIN_PATH"`
-	BinDir      string
+	BinDir      string `yaml:"BinDir" env:"SIPB_BIN_DIR"`
 	WebpageDir  string `yaml:"WebpageDir" env:"SIPB_WEBPAGE_DIR"`
 	Port        int    `yaml:"Port" env:"SIPB_PORT"`
 	BindAddr    string `yaml:"BindAddr" env:"SIPB_BIND_ADDR"`
@@ -27,7 +25,6 @@ type Config struct {
 func (c *Config) ReadFromYAML(fp string) error {
 	configfileBytes, err := ioutil.ReadFile(fp)
 	yaml.Unmarshal(configfileBytes, c)
-	c.BinDir = path.Join(c.WebpageDir, c.BinPath)
 	return err
 }
 
@@ -58,7 +55,5 @@ func (c *Config) ReadFromEnvVars() (err error) {
 			}
 		}
 	}
-	c.BinDir = path.Join(c.WebpageDir, c.BinPath)
-
 	return
 }

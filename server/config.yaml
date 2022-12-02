@@ -1,5 +1,5 @@
 WebpageDir: ../webpages
-BinPath: /bin
+BinDir: ../bin
 BindAddr: ""
 Port: 8080
 MaxFileCnt: -1

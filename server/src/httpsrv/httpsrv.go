@@ -84,6 +84,7 @@ func (srv *HTTPSrv) handleGetFileCount(w http.ResponseWriter, request *http.Requ
 
 func (srv *HTTPSrv) Start() error {
 	http.Handle("/", http.FileServer(http.Dir(srv.config.WebpageDir)))
+	http.Handle("/static/", http.StripPrefix("/static", http.FileServer(http.Dir(srv.config.BinDir))))
 	http.HandleFunc("/upload", srv.handleSave)
 	http.HandleFunc("/retrieve", srv.handleGetFileDetails)
 	http.HandleFunc("/retrieve/fileCount", srv.handleGetFileCount)

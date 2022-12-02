@@ -34,10 +34,14 @@ function prettySize(bytes) {
 }
 
 function populateFileContainer(details, fileContainer) {
+    let filelocation = "/static/" + details.ID;
+
 	let filename = document.createElement("h3");
 	let link = document.createElement("a");
 	filename.innerText = details.Name;
 	link.classList.add("filelink");
+    link.href = filelocation;
+    link.download = details.Name
 	link.append(filename);
 	fileContainer.append(link);
 
@@ -56,17 +60,15 @@ function populateFileContainer(details, fileContainer) {
 
 	fileContainer.append(fileInfoBox);
 
-    /*
 	if (details.Type.includes("image")) {
 		fileContainer.classList.add("imgContainer");
 
 		let img = document.createElement("img");
-		img.src = details.Path;
+		img.src = filelocation;
 		img.classList.add("imagePreview");
 
 		fileContainer.append(img);
 	}
-    */
 }
 
 function setFileCnt(cnt) {

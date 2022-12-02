@@ -4,3 +4,4 @@ webpages/bin
 docker-compose.yml
 data
 .htpasswd
+bin
