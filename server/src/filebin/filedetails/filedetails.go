@@ -11,7 +11,7 @@ type FileDetails struct {
 	Size      int64     `json:"Size"`
 	Type      string    `json:"Type"`
 	Timestamp time.Time `json:"Timestamp"`
-	Location  string
+	Location  string    `json:"-"`
 }
 
 func (d *FileDetails) AsJSON() []byte {

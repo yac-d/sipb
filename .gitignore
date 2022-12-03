@@ -5,3 +5,4 @@ docker-compose.yml
 data
 .htpasswd
 bin
+cliclient/__pycache__
