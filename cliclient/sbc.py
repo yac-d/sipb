@@ -11,8 +11,12 @@ from sipb_api import Pastebin
 CONFIG_PATH=os.path.expanduser("~/.config/sbcrc")
 USAGE="""USAGE: sbc [options] [arguments]
 Options:
-    -l [n]
-        Displays details of n most recent files"""
+    -l, --list [n]
+        Displays details of n most recent files
+    -f, -u, --upload <File>...
+        Uploads the given files to the pastebin
+    -o, -d, --download <Pattern>
+        Downloads all files whose name matches the given pattern"""
 
 def create_config_file():
     info = {}
@@ -43,6 +47,7 @@ def display_files(files):
     i = 1
     for file in files:
         tab.add_row([i, file["Name"], pretty_size(file["Size"]), file["Type"], pretty_time(file["Timestamp"])])
+        i += 1
     print(tab)
 
 if len(sys.argv) < 2:
@@ -55,13 +60,31 @@ if not os.path.exists(CONFIG_PATH):
 cfg = read_config_file()
 pb = Pastebin(cfg["Server"])
 
-match sys.argv[1]:
+if sys.argv[1] in ["-l", "--list"]:
+    cnt = pb.count()
+    limit = min(int(sys.argv[2]), cnt) if len(sys.argv) > 2 else cnt
+    files = [pb.detailsOfNthNewest(i) for i in range(1, limit + 1)]
+    display_files(files)
 
-    case "-l":
-        cnt = pb.count()
-        limit = min(int(sys.argv[2]), cnt) if len(sys.argv) > 2 else cnt
-        files = [pb.detailsOfNthNewest(i) for i in range(1, limit + 1)]
-        display_files(files)
+elif sys.argv[1] in ["-f", "-u", "--upload"]:
+    for file in sys.argv[2:]:
+        if os.path.isfile(file):
+            print("Uploading", file)
+            pb.upload(file)
+        else:
+            print(file, "is not a valid file")
 
-    case other:
+elif sys.argv[1] in ["-o", "-d", "--download"]:
+    if len(sys.argv) < 3:
+        print("Pattern not provided")
         print(USAGE)
+        exit(1)
+    files = [pb.detailsOfNthNewest(i) for i in range(1, pb.count() + 1)]
+    i = 1
+    for file in files:
+        if sys.argv[2] in file["Name"]:
+            pb.downloadNth(i)
+        i += 1
+
+else:
+    print(USAGE)

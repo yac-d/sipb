@@ -1,8 +1,23 @@
 # CLI Client
 
-So far, only a small python API has been written. It depends on the `requests` library. Refer to the following to use it.
+```
+USAGE: sbc [options] [arguments]
+Options:
+    -l, --list [n]
+        Displays details of n most recent files
+    -f, -u, --upload <File>...
+        Uploads the given files to the pastebin
+    -o, -d, --download <Pattern>
+        Downloads all files whose name matches the given pattern
+```
+
+A configuration file is stored at `~/.config/sbcrc`.
 
 ---
+
+## Python API
+
+Depends on the `requests` library.
 
 ```
 class Pastebin(host, port=80, basicauth=None, https=False, pastebinroot="/")
@@ -34,5 +49,3 @@ Pastebin.upload(filepath)
 ```
 
 Uploads the file at `filepath` and returns the number of bytes truncated. Raises an exception for HTTP response codes >=400 and !=413.
-
----
