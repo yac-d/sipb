@@ -9,14 +9,17 @@ from prettytable import PrettyTable
 from sipb_api import Pastebin
 
 CONFIG_PATH=os.path.expanduser("~/.config/sbcrc")
-USAGE="""USAGE: sbc [options] [arguments]
+USAGE="""Simple Bin Commands
+USAGE: sbc [options] [arguments]
 Options:
     -l, --list [n]
         Displays details of n most recent files
     -f, -u, --upload <File>...
         Uploads the given files to the pastebin
     -o, -d, --download <Pattern>
-        Downloads all files whose name matches the given pattern"""
+        Downloads all files whose name matches the given pattern
+    -c, --config
+        Reconfigure sbc settings"""
 
 def create_config_file():
     info = {}
@@ -85,6 +88,9 @@ elif sys.argv[1] in ["-o", "-d", "--download"]:
         if sys.argv[2] in file["Name"]:
             pb.downloadNth(i)
         i += 1
+
+elif sys.argv[1] in ["-c", "--config"]:
+    create_config_file()
 
 else:
     print(USAGE)

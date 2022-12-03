@@ -11,6 +11,10 @@ Options:
         Downloads all files whose name matches the given pattern
 ```
 
+To use, clone the repository and make the script available to run through an alias or with `$PATH`.
+
+Depends on `prettytable` and `sipb_api`.
+
 A configuration file is stored at `~/.config/sbcrc`.
 
 ---
