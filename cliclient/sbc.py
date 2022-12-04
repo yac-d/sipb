@@ -16,8 +16,10 @@ Options:
         Displays details of n most recent files
     -f, -u, --upload <File>...
         Uploads the given files to the pastebin
-    -o, -d, --download <Pattern>
-        Downloads all files whose name matches the given pattern
+    -o <Pattern>
+        Downloads the most recent file whose name matches the given pattern
+    -d, --download <n>
+        Downloads the nth most recent file
     -c, --config
         Reconfigure sbc settings"""
 
@@ -77,7 +79,7 @@ elif sys.argv[1] in ["-f", "-u", "--upload"]:
         else:
             print(file, "is not a valid file")
 
-elif sys.argv[1] in ["-o", "-d", "--download"]:
+elif sys.argv[1] == "-o":
     if len(sys.argv) < 3:
         print("Pattern not provided")
         print(USAGE)
@@ -86,8 +88,13 @@ elif sys.argv[1] in ["-o", "-d", "--download"]:
     i = 1
     for file in files:
         if sys.argv[2] in file["Name"]:
+            print("Downloading", file["Name"])
             pb.downloadNth(i)
+            break
         i += 1
+
+elif sys.argv[1] in ["-d", "--download"]:
+    pb.downloadNth(int(sys.argv[2]) if len(sys.argv) > 2 else 1)
 
 elif sys.argv[1] in ["-c", "--config"]:
     create_config_file()

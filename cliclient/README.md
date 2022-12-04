@@ -7,8 +7,12 @@ Options:
         Displays details of n most recent files
     -f, -u, --upload <File>...
         Uploads the given files to the pastebin
-    -o, -d, --download <Pattern>
+    -o <Pattern>
         Downloads all files whose name matches the given pattern
+    -d, --download <n>
+        Downloads the nth most recent file
+    -c, --config
+        Reconfigure sbc settings"""
 ```
 
 To use, clone the repository and make the script available to run through an alias or with `$PATH`.
@@ -53,3 +57,9 @@ Pastebin.upload(filepath)
 ```
 
 Uploads the file at `filepath` and returns the number of bytes truncated. Raises an exception for HTTP response codes >=400 and !=413.
+
+```
+Pastebin.downloadNth(n, savePath=".")
+```
+
+Downloads the nth most recent file, and saves it in the directory given by `savePath`.
