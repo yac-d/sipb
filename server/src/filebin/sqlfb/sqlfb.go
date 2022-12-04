@@ -38,6 +38,10 @@ func (fb *SQLFileBin) Initialize() (err error) {
 	return err
 }
 
+func (fb *SQLFileBin) Cleanup() error {
+	return fb.db.Close()
+}
+
 func (fb *SQLFileBin) SaveFile(f multipart.File, h *multipart.FileHeader) filebin.SaveFileResult {
 	id := uuid.New().String()
 	filepath := path.Join(fb.config.BinDir, id)

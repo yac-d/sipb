@@ -33,5 +33,7 @@ func main() {
 	var terminator = make(chan os.Signal, 1)
 	signal.Notify(terminator, os.Interrupt, syscall.SIGTERM)
 	<-terminator
+
+	bin.Cleanup()
 	logger.Log("Exiting")
 }
