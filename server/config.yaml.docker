@@ -1,6 +1,9 @@
 WebpageDir: /var/www/html
-BinPath: /bin
+BinPath: /var/www/bin
 BindAddr: ""
 Port: 80
 MaxFileCnt: 50
 MaxFileSize: 5000000000
+DatabaseUser: sipb_server
+DatabasePasswd: srvr
+DatabaseHost: localhost
