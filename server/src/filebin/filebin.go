@@ -3,7 +3,7 @@ package filebin
 import (
 	"mime/multipart"
 
-	"github.com/Eeshaan-rando/sipb/src/filebin/filedetails"
+	"github.com/yac-d/sipb/filedetails"
 )
 
 type FileBin interface {

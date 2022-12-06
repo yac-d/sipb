@@ -9,12 +9,12 @@ import (
 	"path"
 	"time"
 
-	"github.com/Eeshaan-rando/sipb/src/configdef"
-	"github.com/Eeshaan-rando/sipb/src/filebin"
-	"github.com/Eeshaan-rando/sipb/src/filebin/filedetails"
-	"github.com/Eeshaan-rando/sipb/src/utils"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/google/uuid"
+	"github.com/yac-d/sipb/configdef"
+	"github.com/yac-d/sipb/filebin"
+	"github.com/yac-d/sipb/filedetails"
+	"github.com/yac-d/sipb/utils"
 )
 
 type SQLFileBin struct {

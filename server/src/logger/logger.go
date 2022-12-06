@@ -3,7 +3,7 @@ package logger
 import (
 	"log"
 
-	"github.com/Eeshaan-rando/sipb/src/filebin"
+	"github.com/yac-d/sipb/filebin"
 )
 
 func LogConfigRead(source string, err error) {

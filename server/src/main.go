@@ -5,10 +5,10 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/Eeshaan-rando/sipb/src/configdef"
-	"github.com/Eeshaan-rando/sipb/src/filebin/sqlfb"
-	"github.com/Eeshaan-rando/sipb/src/httpsrv"
-	"github.com/Eeshaan-rando/sipb/src/logger"
+	"github.com/yac-d/sipb/configdef"
+	"github.com/yac-d/sipb/filebin/sqlfb"
+	"github.com/yac-d/sipb/httpsrv"
+	"github.com/yac-d/sipb/logger"
 )
 
 func main() {

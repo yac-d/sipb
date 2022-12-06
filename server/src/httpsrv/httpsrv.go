@@ -5,8 +5,8 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/Eeshaan-rando/sipb/src/configdef"
-	"github.com/Eeshaan-rando/sipb/src/filebin"
+	"github.com/yac-d/sipb/configdef"
+	"github.com/yac-d/sipb/filebin"
 )
 
 type HTTPSrv struct {
