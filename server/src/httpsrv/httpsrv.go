@@ -27,14 +27,19 @@ func New(conf configdef.Config, fb filebin.FileBin) *HTTPSrv {
 
 func (srv *HTTPSrv) handleSave(w http.ResponseWriter, request *http.Request) {
 	request.ParseMultipartForm(64000000)
-	incomingFile, h, err := request.FormFile("file")
 
+	saveDetails := filebin.FileToSave{}
+	var err error
+
+	saveDetails.File, saveDetails.Header, err = request.FormFile("file")
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
-	result := srv.filebin.SaveFile(incomingFile, h)
+	saveDetails.Note = request.FormValue("note")
+
+	result := srv.filebin.SaveFile(saveDetails)
 	if srv.OnSave != nil {
 		defer srv.OnSave(result)
 	}

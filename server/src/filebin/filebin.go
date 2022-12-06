@@ -7,10 +7,18 @@ import (
 )
 
 type FileBin interface {
-	SaveFile(f multipart.File, h *multipart.FileHeader) SaveFileResult
+	SaveFile(toSave FileToSave) SaveFileResult
 	DetailsOfNthNewest(n int) (filedetails.FileDetails, FileDetailsResult)
 	Count() FileCountResult
 	RemoveOldFiles() error
+}
+
+// FileToSave holds a file and its related information
+// to be passed to the file bin for saving
+type FileToSave struct {
+	File   multipart.File
+	Header *multipart.FileHeader
+	Note   string
 }
 
 type SaveFileResult struct {

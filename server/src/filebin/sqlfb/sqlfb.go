@@ -4,7 +4,6 @@ import (
 	"database/sql"
 	"fmt"
 	"io"
-	"mime/multipart"
 	"os"
 	"path"
 	"time"
@@ -42,14 +41,14 @@ func (fb *SQLFileBin) Cleanup() error {
 	return fb.db.Close()
 }
 
-func (fb *SQLFileBin) SaveFile(f multipart.File, h *multipart.FileHeader) filebin.SaveFileResult {
+func (fb *SQLFileBin) SaveFile(toSave filebin.FileToSave) filebin.SaveFileResult {
 	id := uuid.New().String()
 	filepath := path.Join(fb.config.BinDir, id)
 
 	var result = filebin.SaveFileResult{
 		TruncatedBytes: 0,
 		Error:          nil,
-		Filename:       h.Filename,
+		Filename:       toSave.Header.Filename,
 		Location:       filepath,
 	}
 
@@ -61,13 +60,13 @@ func (fb *SQLFileBin) SaveFile(f multipart.File, h *multipart.FileHeader) filebi
 
 	var written int64
 	if fb.config.MaxFileSize > -1 {
-		written, err = io.CopyN(persistedFile, f, fb.config.MaxFileSize)
-		realFileSize := int64(utils.ReaderLen(f))
+		written, err = io.CopyN(persistedFile, toSave.File, fb.config.MaxFileSize)
+		realFileSize := int64(utils.ReaderLen(toSave.File))
 		if realFileSize > fb.config.MaxFileSize {
 			result.TruncatedBytes = realFileSize - fb.config.MaxFileSize
 		}
 	} else {
-		written, err = io.Copy(persistedFile, f)
+		written, err = io.Copy(persistedFile, toSave.File)
 	}
 	persistedFile.Close()
 
@@ -77,7 +76,7 @@ func (fb *SQLFileBin) SaveFile(f multipart.File, h *multipart.FileHeader) filebi
 		return result
 	}
 
-	_, err = fb.db.Exec("CALL INSERT_FILE(?, ?, ?, ?, ?)", id, h.Filename, filepath, written, mimetype)
+	_, err = fb.db.Exec("CALL INSERT_FILE(?, ?, ?, ?, ?)", id, toSave.Header.Filename, filepath, written, mimetype)
 	if err != nil {
 		result.Error = err
 		return result
