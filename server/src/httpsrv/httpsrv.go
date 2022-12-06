@@ -75,6 +75,9 @@ func (srv *HTTPSrv) handleGetFileDetails(w http.ResponseWriter, request *http.Re
 
 func (srv *HTTPSrv) handleGetFileCount(w http.ResponseWriter, request *http.Request) {
 	result := srv.filebin.Count()
+	if result.Error != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+	}
 	w.Write([]byte(strconv.Itoa(result.Count)))
 
 	if srv.OnCountRequested != nil {
