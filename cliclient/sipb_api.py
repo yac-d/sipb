@@ -22,9 +22,9 @@ class Pastebin:
             self._httpError("Fetching details", resp.status_code)
         return json.loads(resp.text)
 
-    def upload(self, filepath):
+    def upload(self, filepath, note=""):
         file = open(filepath, "rb")
-        resp = requests.post(self.url+"upload", files={"file": file})
+        resp = requests.post(self.url+"upload", files={"file": file}, data={"note": note})
         if not resp.ok and resp.status_code != 413:
             self._httpError("File upload", resp.status_code)
         return int(resp.text) if resp.text else 0

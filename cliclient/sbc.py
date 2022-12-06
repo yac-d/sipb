@@ -14,8 +14,8 @@ USAGE: sbc [options] [arguments]
 Options:
     -l, --list [n]
         Displays details of n most recent files
-    -f, -u, --upload <File>...
-        Uploads the given files to the pastebin
+    -f, -u, --upload <File> [Note]
+        Uploads File to the pastebin with Note
     -o <Pattern>
         Downloads the most recent file whose name matches the given pattern
     -d, --download <n>
@@ -48,10 +48,10 @@ def pretty_time(datetimeStr):
 
 def display_files(files):
     tab = PrettyTable()
-    tab.field_names = ["No", "Name", "Size", "Type", "Time"]
+    tab.field_names = ["No", "Name", "Size", "Type", "Time", "Note"]
     i = 1
     for file in files:
-        tab.add_row([i, file["Name"], pretty_size(file["Size"]), file["Type"], pretty_time(file["Timestamp"])])
+        tab.add_row([i, file["Name"], pretty_size(file["Size"]), file["Type"], pretty_time(file["Timestamp"]), file["Note"]])
         i += 1
     print(tab)
 
@@ -72,10 +72,10 @@ if sys.argv[1] in ["-l", "--list"]:
     display_files(files)
 
 elif sys.argv[1] in ["-f", "-u", "--upload"]:
-    for file in sys.argv[2:]:
-        if os.path.isfile(file):
-            print("Uploading", file)
-            pb.upload(file)
+    if len(sys.argv) > 2:
+        if os.path.isfile(sys.argv[2]):
+            print("Uploading", sys.argv[2])
+            pb.upload(sys.argv[2], sys.argv[3] if len(sys.argv) > 3 else "")
         else:
             print(file, "is not a valid file")
 

@@ -5,8 +5,8 @@ USAGE: sbc [options] [arguments]
 Options:
     -l, --list [n]
         Displays details of n most recent files
-    -f, -u, --upload <File>...
-        Uploads the given files to the pastebin
+    -f, -u, --upload <File> [Note]
+        Uploads File with Note
     -o <Pattern>
         Downloads all files whose name matches the given pattern
     -d, --download <n>

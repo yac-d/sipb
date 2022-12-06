@@ -51,7 +51,9 @@ The response is in JSON format, with the following fields:
 - `Size`: File size in bytes
 - `Type`: MIME type of the file
 - `Timestamp`: Upload timestamp in ISO8601
+- `Note`: Note provided by user when uploading
 
 Uploading a file is done by `POST`ing a multipart form data request to `/upload`. The key/name for the file in the form should be `file`.
+A note can be provided with key `note`.
 
 Files reside at the `/static` path. In this folder, the files are named by their UUIDs.
