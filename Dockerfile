@@ -13,7 +13,7 @@ LABEL maintainer="Prithvi Vishak <prithvivishak@gmail.com>"
 COPY --from=buildcontainer /build/sipb/server/sipb /
 COPY --from=buildcontainer /build/sipb/server/config.yaml.docker /etc/sipb/config.yaml
 COPY --from=buildcontainer /build/sipb/webpages/ /var/www/html/
-RUN mkdir -p /var/www/bin && ln -s /var/www/bin /var/www/html/bin
+RUN mkdir -p /var/www/bin
 RUN apk add --no-cache gcompat
 
 EXPOSE 80/tcp

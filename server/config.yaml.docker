@@ -1,5 +1,5 @@
 WebpageDir: /var/www/html
-BinPath: /var/www/bin
+BinDir: /var/www/bin
 BindAddr: ""
 Port: 80
 MaxFileCnt: 50
