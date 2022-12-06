@@ -11,6 +11,7 @@ type FileDetails struct {
 	Size      int64     `json:"Size"`
 	Type      string    `json:"Type"`
 	Timestamp time.Time `json:"Timestamp"`
+	Note      string    `json:"Note"`
 	Location  string    `json:"-"`
 }
 

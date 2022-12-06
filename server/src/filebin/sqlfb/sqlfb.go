@@ -76,7 +76,11 @@ func (fb *SQLFileBin) SaveFile(toSave filebin.FileToSave) filebin.SaveFileResult
 		return result
 	}
 
-	_, err = fb.db.Exec("CALL INSERT_FILE(?, ?, ?, ?, ?)", id, toSave.Header.Filename, filepath, written, mimetype)
+	_, err = fb.db.Exec(
+		"CALL INSERT_FILE(?, ?, ?, ?, ?, ?)",
+		id, toSave.Header.Filename, filepath,
+		written, mimetype, toSave.Note,
+	)
 	if err != nil {
 		result.Error = err
 		return result
@@ -132,7 +136,7 @@ func (fb *SQLFileBin) DetailsOfNthNewest(n int) (fd filedetails.FileDetails, res
 	row := fb.db.QueryRow("CALL NTH_MOST_RECENT_FILE(?)", n-1)
 
 	var timestampStr string
-	result.Error = row.Scan(&fd.ID, &fd.Name, &fd.Location, &fd.Size, &fd.Type, &timestampStr)
+	result.Error = row.Scan(&fd.ID, &fd.Name, &fd.Location, &fd.Size, &fd.Type, &timestampStr, &fd.Note)
 	if result.Error != nil {
 		return
 	}
