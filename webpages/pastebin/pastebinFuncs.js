@@ -73,6 +73,13 @@ function populateFileContainer(details, fileContainer) {
 
 		fileContainer.append(img);
 	}
+
+    if (details.Note != "") {
+        let note = document.createElement("p");
+        note.classList.add("note");
+        note.innerText = details.Note;
+        fileContainer.append(note)
+    }
 }
 
 function setFileCnt(cnt) {
