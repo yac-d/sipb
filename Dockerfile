@@ -5,7 +5,7 @@ WORKDIR /build
 COPY ./webpages /build/sipb/webpages/
 COPY ./server /build/sipb/server/
 WORKDIR /build/sipb/server
-RUN go build -o sipb
+RUN make
 
 FROM alpine:latest as sipb
 LABEL maintainer="Prithvi Vishak <prithvivishak@gmail.com>"
