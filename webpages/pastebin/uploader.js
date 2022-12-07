@@ -38,8 +38,16 @@ function uploadOnClick() {
 		alert("File to upload not selected");
 		return;
 	}
+
+    let formdata = new FormData(uploadForm);
+    let note = prompt("Add a note");
+    if (note == null) {
+        return
+    }
+    formdata.set("note", note.substring(0, 200));
+
 	document.getElementById("spinner").style.display = "inline-block";
-	let p = uploadFormData(new FormData(uploadForm));
+	let p = uploadFormData(formdata);
 	p.then(function() {
 		chooser.value = "";
 		refreshFileList();
