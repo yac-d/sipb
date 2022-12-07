@@ -38,6 +38,9 @@ func (srv *HTTPSrv) handleSave(w http.ResponseWriter, request *http.Request) {
 	}
 
 	saveDetails.Note = request.FormValue("note")
+	if len(saveDetails.Note) > 200 {
+		saveDetails.Note = saveDetails.Note[:200]
+	}
 
 	result := srv.filebin.SaveFile(saveDetails)
 	if srv.OnSave != nil {
