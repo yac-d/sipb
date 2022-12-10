@@ -11,6 +11,7 @@ import (
 	"net/url"
 	"path"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -56,7 +57,7 @@ func (pb Pastebin) DetailsOfNthNewest(n int) (FileDetails, error) {
 	var details FileDetails
 
 	urlpath, _ := url.JoinPath(pb.url, detailsPath)
-	resp, err := http.Get(urlpath)
+	resp, err := http.Post(urlpath, "text/plain", strings.NewReader(strconv.Itoa(n)))
 	if err != nil {
 		return details, err
 	}
@@ -97,8 +98,7 @@ func (pb Pastebin) Upload(filepath string, note string) error {
 }
 
 // DownloadNth downloads the nth most recently uploaded file
-// to savePath
-func (pb Pastebin) DownloadNth(n int, destination string) error {
+func (pb Pastebin) DownloadNth(n int) error {
 	details, err := pb.DetailsOfNthNewest(n)
 	if err != nil {
 		return err
@@ -112,5 +112,5 @@ func (pb Pastebin) DownloadNth(n int, destination string) error {
 
 	defer resp.Body.Close()
 	contents, _ := io.ReadAll(resp.Body)
-	return ioutil.WriteFile(destination, contents, 0755)
+	return ioutil.WriteFile(details.Name, contents, 0755)
 }
