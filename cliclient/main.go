@@ -7,6 +7,7 @@ import (
 	"os"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/jedib0t/go-pretty/v6/table"
 	"github.com/yac-d/sbc/conf"
@@ -93,7 +94,14 @@ func main() {
 		for i := 1; i < n+1; i++ {
 			details, err := pb.DetailsOfNthNewest(i)
 			checkError(err)
-			t.AppendRow(table.Row{i, details.Name, prettySize(details.Size), details.Type, details.Timestamp, details.Note})
+			t.AppendRow(table.Row{
+				i,
+				details.Name,
+				prettySize(details.Size),
+				details.Type,
+				prettyTime(details.Timestamp),
+				details.Note,
+			})
 		}
 		t.SetStyle(table.StyleRounded)
 		t.Render()
@@ -117,4 +125,8 @@ func prettySize(bytes int64) string {
 	suffix := suffixes[logB1024]
 	num := float64(bytes) / math.Pow(1024, float64(logB1024))
 	return fmt.Sprintf("%.2f %s", num, suffix)
+}
+
+func prettyTime(t time.Time) string {
+	return t.Local().Format("15:04 Mon 2-1-06")
 }
