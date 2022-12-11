@@ -93,7 +93,7 @@ func main() {
 		for i := 1; i < n+1; i++ {
 			details, err := pb.DetailsOfNthNewest(i)
 			checkError(err)
-			t.AppendRow(table.Row{i, details.Name, details.Size, details.Type, details.Timestamp, details.Note})
+			t.AppendRow(table.Row{i, details.Name, prettySize(details.Size), details.Type, details.Timestamp, details.Note})
 		}
 		t.SetStyle(table.StyleRounded)
 		t.Render()
@@ -106,11 +106,15 @@ func main() {
 
 func checkError(err error) {
 	if err != nil {
-		printFatal(err)
+		fmt.Println(err)
+		os.Exit(1)
 	}
 }
 
-func printFatal(toPrint any) {
-	fmt.Println(toPrint)
-	os.Exit(1)
+func prettySize(bytes int64) string {
+	suffixes := [5]string{"B", "KiB", "MiB", "GiB", "TiB"}
+	logB1024 := int(math.Floor(math.Log(float64(bytes)) / math.Log(1024)))
+	suffix := suffixes[logB1024]
+	num := float64(bytes) / math.Pow(1024, float64(logB1024))
+	return fmt.Sprintf("%.2f %s", num, suffix)
 }
