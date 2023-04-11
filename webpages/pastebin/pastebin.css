@@ -70,7 +70,7 @@ body {
 	grid-row: 2 2;
 	margin: 1em;
 	max-width: 100%;
-	height: auto;
+	height: 75vh;
 }
 
 @media (max-width: 800px) {
